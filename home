@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Portal - Ravenclaw Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Ravenclaw Theme Colors */
+            --primary-blue: #0E1A40;
+            --accent-bronze: #946B2D;
+            --bg-color: #F4F5F7;
+            --card-bg: #FFFFFF;
+            --text-dark: #222222;
+            --text-light: #737373;
+            --shadow-soft: 0 15px 35px rgba(14, 26, 64, 0.08);
+            --shadow-3d: 5px 5px 15px rgba(0,0,0,0.1), -5px -5px 15px rgba(255,255,255,0.8);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-blue);
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 250px;
+            background-color: var(--card-bg);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(0,0,0,0.05);
+            z-index: 10;
+            box-shadow: 2px 0 20px rgba(0,0,0,0.02);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-blue);
+        }
+
+        .logo i {
+            color: var(--accent-bronze);
+            font-size: 1.8rem;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: var(--primary-blue);
+            color: white;
+            box-shadow: 0 8px 20px rgba(14, 26, 64, 0.2);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active i { color: var(--accent-bronze); }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex: 1;
+            padding: 2rem 3rem;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-bar {
+            background: var(--card-bg);
+            padding: 12px 20px;
+            border-radius: 20px;
+            width: 400px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow-3d);
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+            background: transparent;
+        }
+
+        /* --- SECTION CONTAINERS --- */
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 3D CARDS (Library & Class) --- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .book-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
+            text-align: center;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .book-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 20px 40px rgba(14, 26, 64, 0.15);
+        }
+
+        .book-cover {
+            width: 100%;
+            height: 220px;
+            background: linear-gradient(135deg, var(--primary-blue), #1a2a6c);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.3), 5px 5px 15px rgba(0,0,0,0.2); /* 3D Book Effect */
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-bronze);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            padding: 10px;
+        }
+        
+        .book-cover::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* --- TABLES (Rapor & Panduan) --- */
+        .data-table-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--shadow-soft);
+            margin-top: 1rem;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            color: var(--accent-bronze);
+            font-weight: 600;
+        }
+
+        tr:hover td {
+            background-color: rgba(14, 26, 64, 0.03);
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--primary-blue);
+            font-style: italic;
+        }
+
+        /* --- RIGHT PANEL --- */
+        .right-panel {
+            width: 300px;
+            background: var(--card-bg);
+            padding: 2rem;
+            box-shadow: -2px 0 20px rgba(0,0,0,0.02);
+            z-index: 10;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 3rem;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            border: 2px solid var(--accent-bronze);
+        }
+
+        .widget {
+            background: var(--bg-color);
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05), inset -2px -2px 5px white;
+            margin-bottom: 2rem;
+        }
+
+        .widget h4 { margin-bottom: 15px; color: var(--primary-blue); }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span>Akademik</span>
+        </div>
+        
+        <div class="nav-item active" onclick="switchTab('library', this)">
+            <i class="fa-solid fa-book-open"></i> Library
+        </div>
+        <div class="nav-item" onclick="switchTab('aktivitas', this)">
+            <i class="fa-solid fa-users-rectangle"></i> Aktivitas Kelas
+        </div>
+        <div class="nav-item" onclick="switchTab('rapor', this)">
+            <i class="fa-solid fa-chart-line"></i> Rapor
+        </div>
+        <div class="nav-item" onclick="switchTab('panduankelas', this)">
+            <i class="fa-solid fa-chalkboard-user"></i> Panduan Kelas
+        </div>
+        <div class="nav-item" onclick="switchTab('panduanujian', this)">
+            <i class="fa-solid fa-file-pen"></i> Panduan Ujian
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <div class="header">
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass" style="color: var(--text-light)"></i>
+                <input type="text" placeholder="Cari buku, kelas, atau panduan...">
+            </div>
+            <h2>Selamat Datang, Student</h2>
+        </div>
+
+        <!-- 1. LIBRARY -->
+        <section id="library" class="section active">
+            <h3>Library Akademik</h3>
+            <p style="color: var(--text-light); margin-top: 5px;">Koleksi buku dan referensi terbaru.</p>
+            <div class="card-grid">
+                <!-- Mock 3D Book Cards -->
+                <div class="book-card">
+                    <div class="book-cover">Mantra & Sihir Dasar</div>
+                    <h4 style="margin-top: 10px;">Mantra & Sihir</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-light);">Miranda Goshawk</p>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover" style="background: linear-gradient(135deg, #946B2D, #5c4118);">Sejarah Sihir</div>
+                    <h4 style="margin-top: 10px;">Sejarah Sihir</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-light);">Bathilda Bagshot</p>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover" style="background: linear-gradient(135deg, #1a1a1a, #4a4a4a);">Pertahanan Gelap</div>
+                    <h4 style="margin-top: 10px;">Ilmu Hitam</h4>
+                    <p style="font-size: 0.8rem; color: var(--text-light);">Quentin Trimble</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. AKTIVITAS KELAS -->
+        <section id="aktivitas" class="section">
+            <h3>Aktivitas Kelas</h3>
+            <div class="card-grid">
+                <div class="book-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px;">
+                    <i class="fa-solid fa-flask" style="font-size: 3rem; color: var(--primary-blue); margin-bottom: 15px;"></i>
+                    <h4>Kelas Ramuan</h4>
+                    <p style="font-size: 0.8rem;">Prof. Slughorn - 10:00 AM</p>
+                </div>
+                <div class="book-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px;">
+                    <i class="fa-solid fa-star" style="font-size: 3rem; color: var(--accent-bronze); margin-bottom: 15px;"></i>
+                    <h4>Astronomi</h4>
+                    <p style="font-size: 0.8rem;">Prof. Sinistra - 08:00 PM</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. RAPOR (Data dari Google Sheets) -->
+        <section id="rapor" class="section">
+            <h3>Rapor Siswa</h3>
+            <div class="data-table-container">
+                <div id="rapor-loading" class="loading">Mengambil data rapor dari Google Sheets... <i class="fa-solid fa-circle-notch fa-spin"></i></div>
+                <table id="rapor-table" style="display: none;">
+                    <thead id="rapor-head"></thead>
+                    <tbody id="rapor-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 4. PANDUAN KELAS (Data dari Google Sheets) -->
+        <section id="panduankelas" class="section">
+            <h3>Panduan Kelas</h3>
+            <div class="data-table-container">
+                <div id="panduan-loading" class="loading">Mengambil data panduan dari Google Sheets... <i class="fa-solid fa-circle-notch fa-spin"></i></div>
+                <table id="panduan-table" style="display: none;">
+                    <thead id="panduan-head"></thead>
+                    <tbody id="panduan-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 5. PANDUAN UJIAN -->
+        <section id="panduanujian" class="section">
+            <h3>Panduan Ujian Akhir</h3>
+            <div class="data-table-container">
+                <p>Jadwal dan tata tertib ujian akan diupdate segera menjelang pekan O.W.L.s.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- RIGHT PANEL -->
+    <aside class="right-panel">
+        <div class="profile">
+            <div class="avatar"><i class="fa-solid fa-user"></i></div>
+            <div>
+                <h4 style="margin:0;">Felix Rosier</h4>
+                <p style="font-size: 0.8rem; color: var(--text-light);">Tahun Ke-4</p>
+            </div>
+        </div>
+
+        <div class="widget">
+            <h4><i class="fa-regular fa-calendar-check"></i> Jadwal Terdekat</h4>
+            <p style="font-size: 0.85rem; margin-bottom: 10px;"><strong>Hari ini, 14:00</strong><br>Pengumpulan Esai Transfigurasi</p>
+            <p style="font-size: 0.85rem;"><strong>Besok, 09:00</strong><br>Praktik Herbologi</p>
+        </div>
+    </aside>
+
+    <script>
+        // Tab Navigation Logic
+        function switchTab(tabId, element) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            element.classList.add('active');
+            // Show corresponding section
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Google Sheets Integration Logic
+        const SHEET_ID = '1LmKSA0B28wsxOBrMd7ddsavBLU7tK4CxtZajY5R_X_Q';
+        
+        async function fetchSheetData(sheetName, tableId, loadingId) {
+            // URL format to get CSV from public Google Sheet
+            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
+            
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Gagal mengambil data");
+                const text = await response.text();
+                
+                // Parse CSV text (Basic implementation)
+                const rows = text.split('\n').map(row => {
+                    // Handle commas inside quotes in CSV
+                    const regex = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
+                    const matches = row.match(regex) || [];
+                    return matches.map(m => m.replace(/^"|"$/g, ''));
+                });
+
+                if(rows.length > 0 && rows[0].length > 0) {
+                    renderTable(rows, tableId, loadingId);
+                } else {
+                    document.getElementById(loadingId).innerText = "Data tidak ditemukan atau Sheet kosong.";
+                }
+            } catch (error) {
+                console.error(error);
+                document.getElementById(loadingId).innerText = "Gagal memuat data. Pastikan Google Sheet sudah diset 'Anyone with the link can view'.";
+            }
+        }
+
+        function renderTable(data, tablePrefix, loadingId) {
+            const head = document.getElementById(`${tablePrefix}-head`);
+            const body = document.getElementById(`${tablePrefix}-body`);
+            const table = document.getElementById(`${tablePrefix}-table`);
+            const loading = document.getElementById(loadingId);
+
+            head.innerHTML = '';
+            body.innerHTML = '';
+
+            // Render Header (Baris Pertama CSV)
+            let headerRow = document.createElement('tr');
+            data[0].forEach(col => {
+                let th = document.createElement('th');
+                th.innerText = col.replace(/"/g, ''); // Hapus kutip jika ada
+                headerRow.appendChild(th);
+            });
+            head.appendChild(headerRow);
+
+            // Render Body (Baris Kedua dan seterusnya)
+            for (let i = 1; i < data.length; i++) {
+                if(data[i].length === 0 || data[i][0] === "") continue; // Skip baris kosong
+                
+                let tr = document.createElement('tr');
+                data[i].forEach(col => {
+                    let td = document.createElement('td');
+                    td.innerText = col.replace(/"/g, '');
+                    tr.appendChild(td);
+                });
+                body.appendChild(tr);
+            }
+
+            loading.style.display = 'none';
+            table.style.display = 'table';
+        }
+
+        // Initialize fetching on page load
+        window.onload = () => {
+            // Fetch data for "rapor" sheet
+            fetchSheetData('rapor', 'rapor', 'rapor-loading');
+            
+            // Fetch data for "panduan kelas" sheet
+            // URL encode spasi menjadi %20
+            fetchSheetData('panduan%20kelas', 'panduan', 'panduan-loading');
+        };
+    </script>
+</body>
+</html>
