@@ -221,6 +221,33 @@ h1,h2,h3,h4{font-family:Fraunces,Georgia,serif;color:#fff;line-height:1.15}
 /* panduan O.W.L: rata kiri-kanan */
 .content-box p,.content-box li{text-align:justify;text-justify:inter-word;hyphens:auto;-webkit-hyphens:auto}
 @media(max-width:480px){.shelf-row{--s:.84;gap:48px 22px;padding-bottom:60px}.tome{margin:0 4px}.book-title{font-size:1.02rem}.content-box{padding:1.6rem 1.2rem}}
+
+/* ===== v4: direktori = potret yang tergantung ===== */
+.portraits{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:68px 28px;padding:54px 4px 30px}
+.pt{position:relative;transform-origin:50% -36px;--a:2.4deg;animation:enter .9s cubic-bezier(.2,.9,.3,1.2) backwards,swing 5.5s ease-in-out infinite alternate;animation-delay:calc(var(--i,0)*80ms),calc(var(--i,0)*-700ms)}
+.pt:nth-child(3n){--a:1.6deg}.pt:nth-child(3n+1){--a:2.8deg}
+.pt:hover{animation-play-state:paused}
+@keyframes swing{from{transform:rotate(calc(var(--a)*-1))}to{transform:rotate(var(--a))}}
+.pt::before{content:'';position:absolute;top:-36px;left:50%;width:62%;height:38px;transform:translateX(-50%);background:linear-gradient(to bottom right,transparent calc(50% - .6px),rgba(233,201,135,.8) 50%,transparent calc(50% + .6px)) left/50% 100% no-repeat,linear-gradient(to bottom left,transparent calc(50% - .6px),rgba(233,201,135,.8) 50%,transparent calc(50% + .6px)) right/50% 100% no-repeat}
+.pt::after{content:'';position:absolute;top:-42px;left:50%;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f6e3b4,#8a5d1f);box-shadow:0 0 12px rgba(233,201,135,.7)}
+.pt-frame{padding:10px;border-radius:14px;background:linear-gradient(145deg,#f6e3b4,#b8863a 45%,#f0d487 60%,#8a5d1f);box-shadow:0 16px 36px rgba(0,0,0,.55)}
+.pt-art{position:relative;height:150px;display:grid;place-items:center;overflow:hidden;border-radius:8px;background:var(--bg);box-shadow:inset 0 0 36px rgba(0,0,0,.55)}
+.pt-art i{font-size:4rem;color:rgba(255,255,255,.93);filter:drop-shadow(0 6px 12px rgba(0,0,0,.5));animation:breath 4s ease-in-out infinite}
+@keyframes breath{0%,100%{transform:scale(1) rotate(-4deg)}50%{transform:scale(1.12) rotate(4deg) translateY(-4px)}}
+.pt-art::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.28) 50%,transparent 60%) 150% 0/250% 100%;animation:sweep 5s ease-in-out infinite}
+@keyframes sweep{to{background-position:-50% 0}}
+.pt-lvl{position:absolute;top:8px;left:8px;z-index:1;padding:3px 10px;border-radius:999px;background:rgba(5,8,30,.68);font:700 .7rem Manrope,sans-serif;color:#f6e3b4}
+.pt-info{margin-top:12px;padding:16px;border-radius:14px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 14px 30px rgba(0,0,0,.35)}
+.pt-info h3{font:600 1.4rem/1.15 Fraunces,serif}
+.pt-prof{margin-top:6px;font-size:.9rem}
+.pt-prof a,.pt-prof span{white-space:normal!important}
+.pt-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0}
+.pt-meta div{padding:8px 10px;border-radius:10px;background:rgba(159,232,255,.07)}
+.pt-meta small{display:block;font:600 .7rem Manrope,sans-serif;color:var(--glow)}
+.pt-meta b{font:600 .84rem Manrope,sans-serif;color:#fff;word-break:break-word}
+.pt-act{display:flex;flex-wrap:wrap;gap:8px}
+.pt-act .glowing-btn{flex:1;margin-top:0;white-space:nowrap}
+.pt-empty{grid-column:1/-1;text-align:center;font-style:italic;color:var(--text-light)}
 </style>
 </head>
 <body>
@@ -355,12 +382,7 @@ h1,h2,h3,h4{font-family:Fraunces,Georgia,serif;color:#fff;line-height:1.15}
 <div class="filter-group"><span class="filter-label">Level</span><select id="gui-level" class="filter-select" onchange="filterClassGuide()"></select></div>
 <div class="filter-group"><span class="filter-label">Subject</span><select id="gui-sub" class="filter-select" onchange="filterClassGuide()"></select></div>
 </div>
-<div class="table-responsive">
-<table class="dir-table">
-<thead><tr><th>Level</th><th>Subject</th><th>Professor</th><th style="text-align:center;">Class Room</th><th style="text-align:center;">Rules / Links</th><th>Late Tolerance</th><th>Final Deadline</th></tr></thead>
-<tbody id="classguide-content"></tbody>
-</table>
-</div>
+<div id="classguide-content" class="portraits"></div>
 </section>
 
 <section id="owlguide" class="section">
@@ -1148,7 +1170,7 @@ let filtered = db.classGuide.slice(1).filter(row => {
 return (fLvl === "All" || row[0].trim() === fLvl) &&
 (fSub === "All" || row[1].trim() === fSub);
 });
-if(filtered.length === 0) { container.innerHTML = '<tr><td colspan="7" style="text-align:center; font-style:italic;">No guide found.</td></tr>'; return; }
+if(filtered.length === 0) { container.innerHTML = '<p class="pt-empty">No guide found.</p>'; return; }
 
 container.innerHTML = '';
 filtered.forEach(row => {
@@ -1165,16 +1187,8 @@ profHtml = `<a href="${profData.url}" target="_blank" style="color: var(--text-g
 profHtml = `<span style="font-weight: 600; color: var(--text-gold-light); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-user-tie" style="color:var(--text-gold);"></i> ${profData.name || profRaw}</span>`;
 }
 
-container.innerHTML += `
-<tr>
-<td style="font-weight: 600; color: var(--text-gold-light); white-space: nowrap;">${row[0] || ""}</td>
-<td style="color: var(--text-gold); font-size: 1.1rem; font-family:'Cinzel'; letter-spacing: 0.5px; white-space: nowrap;">${row[1] || ""}</td>
-<td style="white-space: nowrap;">${profHtml}</td>
-<td style="text-align:center; white-space: nowrap;">${classRoomBtn}</td>
-<td style="text-align:center; white-space: nowrap;">${rulesBtn}</td>
-<td style="color: var(--bg-card-light); font-size: 0.85rem; white-space: nowrap;"><i class="fa-solid fa-clock-rotate-left" style="color:var(--text-gold); margin-right:5px;"></i> ${row[5] || ""}</td>
-<td style="color: var(--bg-card-light); font-size: 0.85rem; white-space: nowrap;"><i class="fa-regular fa-calendar-xmark" style="color:var(--text-gold); margin-right:5px;"></i> ${row[6] || ""}</td>
-</tr>`;
+const cs=getBookCoverStyle(row[1]||"");
+container.innerHTML += `<article class="pt" style="--bg:${cs.bg}"><div class="pt-frame"><div class="pt-art"><i class="fa-solid ${cs.icon}"></i><span class="pt-lvl">${row[0]||""}</span></div></div><div class="pt-info"><h3>${row[1]||""}</h3><div class="pt-prof">${profHtml}</div><div class="pt-meta"><div><small>Late tolerance</small><b>${row[5]||"-"}</b></div><div><small>Final deadline</small><b>${row[6]||"-"}</b></div></div><div class="pt-act">${classRoomBtn}${rulesBtn}</div></div></article>`;
 });
 }
 (function() {
@@ -1199,6 +1213,9 @@ addEventListener('pointermove',e=>{for(let i=0;i<3;i++)P.push({x:e.clientX,y:e.c
 ['library-content','classes-content','report-content'].forEach(id=>{const el=document.getElementById(id);if(!el)return;new MutationObserver(()=>{[...el.querySelectorAll('.tome,.wz,.env')].forEach((n,i)=>n.style.setProperty('--i',i))}).observe(el,{childList:true,subtree:true})});
 document.addEventListener('pointermove',e=>{const w=e.target.closest&&e.target.closest('.wz');if(!w||e.pointerType==='touch')return;const r=w.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height,f=w.querySelector('.wz-front');w.style.setProperty('--ry',(x-.5)*22+'deg');w.style.setProperty('--rx',(.5-y)*18+'deg');f.style.setProperty('--mx',x*100+'%');f.style.setProperty('--my',y*100+'%')});
 document.addEventListener('pointerout',e=>{const w=e.target.closest&&e.target.closest('.wz');if(w&&!w.contains(e.relatedTarget)){w.style.setProperty('--ry','0deg');w.style.setProperty('--rx','0deg')}});
+</script>
+<script>
+(()=>{const el=document.getElementById('classguide-content');if(el)new MutationObserver(()=>{[...el.querySelectorAll('.pt')].forEach((n,i)=>n.style.setProperty('--i',i))}).observe(el,{childList:true})})();
 </script>
 </body>
 </html>
