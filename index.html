@@ -853,6 +853,11 @@ showLoadError(err && err.message ? err.message : err);
 }).getAllDatabase();
 };
 
+function resetLibraryFilters() {
+['lib-month', 'lib-week', 'lib-level', 'lib-major'].forEach(function(id) { document.getElementById(id).value = 'All'; });
+filterLibrary();
+}
+
 function filterLibrary() {
 if (!db.library) return;
 const fMonth = document.getElementById('lib-month').value;
@@ -873,7 +878,7 @@ return matchMonth && matchWeek && matchLevel && matchMajor;
 });
 
 if(filtered.length === 0) {
-container.innerHTML = '<p style="text-align:center; margin-top:20px; font-style:italic;">No scrolls found on this shelf.</p>';
+container.innerHTML = '<p style="text-align:center; margin-top:20px; font-style:italic;">No scrolls match these filters (' + (db.library.length - 1) + ' scrolls loaded in total).</p><p style="text-align:center; margin-top:16px;"><button type="button" class="hp-btn line" onclick="resetLibraryFilters()">Show all scrolls</button></p>';
 return;
 }
 
