@@ -106,6 +106,7 @@ h1,h2,h3,h4{font-family:Cinzel,serif;color:var(--text-gold);line-height:1.15}
 .loading-screen{position:fixed;inset:0;z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center;background:var(--night)}
 .loading-screen img{width:84px;animation:glow 2.4s ease-in-out infinite alternate}
 .loading-screen p{font-size:1.05rem;font-style:italic;color:var(--text-gold)}
+.load-err{max-width:440px;font:.8rem/1.5 'Azeret Mono',monospace;color:var(--text-gold-light);word-break:break-word}
 @keyframes glow{from{filter:drop-shadow(0 0 6px rgba(224,198,143,.25))}to{filter:drop-shadow(0 0 22px rgba(224,198,143,.8))}}
 @media(max-width:768px){.main-content{padding:1.5rem 1rem 4rem}.content-box{padding:1.25rem}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -116,7 +117,7 @@ h1,h2,h3,h4{font-family:Cinzel,serif;color:var(--text-gold);line-height:1.15}
 
 <div id="loader" class="loading-screen">
 <img src="https://lh3.googleusercontent.com/d/1itBW7VYne3TZcKNmiia7X2HxGn-LSD33=w256" alt="Ravenclaw crest">
-<p>Consulting the Archives...</p>
+<p id="loader-msg">Consulting the Archives...</p>
 </div>
 
 <div id="passcode-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
@@ -758,9 +759,23 @@ select.innerHTML = `<option value="All">${defaultText}</option>`;
 Array.from(uniqueValues).filter(Boolean).forEach(val => { select.innerHTML += `<option value="${val}">${val}</option>`; });
 }
 
+function showLoadError(msg) {
+const l = document.getElementById('loader');
+l.style.display = 'flex';
+l.innerHTML = '<img src="https://lh3.googleusercontent.com/d/1itBW7VYne3TZcKNmiia7X2HxGn-LSD33=w256" alt=""><p>The archives did not answer.</p><p class="load-err"></p><button type="button" class="glowing-btn" style="width:auto;padding:10px 22px;" onclick="location.reload()">Try again</button>';
+l.querySelector('.load-err').textContent = String(msg || 'Unknown error');
+}
+function guard(fn) {
+return function(r) { try { fn(r); } catch (e) { showLoadError('Script error: ' + (e && e.message ? e.message : e)); } };
+}
+
 window.onload = () => {
+setTimeout(function() {
+const m = document.getElementById('loader-msg');
+if (m && document.getElementById('loader').style.display !== 'none') m.textContent = 'Still consulting the archives... the sheets are slow to answer.';
+}, 15000);
 google.script.run
-.withSuccessHandler(function(response) {
+.withSuccessHandler(guard(function(response) {
 if(response.success) {
 db = response;
 let allMonths = getCombinedUnique(db.library.slice(1), 1, db.classes.slice(1), 0);
@@ -783,9 +798,9 @@ filterClasses();
 filterReport();
 filterClassGuide();
 document.getElementById('loader').style.display = 'none';
-} else { alert("Error: " + response.error); }
-}).withFailureHandler(function(err) {
-document.getElementById('loader').innerHTML = '<img src="https://lh3.googleusercontent.com/d/1itBW7VYne3TZcKNmiia7X2HxGn-LSD33=w256" alt=""><p>The archives did not answer. Reload the page to try again.</p>';
+} else { showLoadError(response && response.error); }
+})).withFailureHandler(function(err) {
+showLoadError(err && err.message ? err.message : err);
 }).getAllDatabase();
 };
 
