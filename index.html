@@ -248,6 +248,54 @@ h1,h2,h3,h4{font-family:Fraunces,Georgia,serif;color:#fff;line-height:1.15}
 .pt-act{display:flex;flex-wrap:wrap;gap:8px}
 .pt-act .glowing-btn{flex:1;margin-top:0;white-space:nowrap}
 .pt-empty{grid-column:1/-1;text-align:center;font-style:italic;color:var(--text-light)}
+
+/* ===== v5: Final Summary = vault megah ===== */
+@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes angspin{to{--ang:360deg}}
+@keyframes shine{to{background-position:-150% 0}}
+@keyframes twinkle{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:1;transform:scale(1.2)}}
+.vault-panel{position:relative;overflow:hidden;margin-top:1.6rem;padding:34px 20px 26px;text-align:center;border:2px solid transparent;border-radius:26px;background:radial-gradient(600px 220px at 18% 0,rgba(159,232,255,.22),transparent 70%) padding-box,radial-gradient(600px 220px at 82% 0,rgba(233,201,135,.22),transparent 70%) padding-box,linear-gradient(rgba(8,12,44,.9),rgba(8,12,44,.9)) padding-box,conic-gradient(from var(--ang),#9fe8ff,#6f8cff,#e9c987,#ff9ec4,#9fe8ff) border-box;animation:angspin 8s linear infinite;box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 70px rgba(159,232,255,.12)}
+.sp{position:absolute;left:var(--x);top:var(--y);color:#f6e3b4;font-style:normal;pointer-events:none;animation:twinkle var(--d) ease-in-out infinite}
+.vp-title{position:relative;font:italic 300 clamp(2.4rem,7vw,4.2rem)/1.05 Fraunces,serif;background:linear-gradient(100deg,#f6e3b4 0 35%,#fff 50%,#f6e3b4 65% 100%) 0 0/250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 4.5s linear infinite;filter:drop-shadow(0 0 22px rgba(233,201,135,.4))}
+.vp-sub{position:relative;margin-top:6px;color:var(--text-light)}
+.vp-months{position:relative;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:20px 0 6px}
+.vm{padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:rgba(159,232,255,.06);color:#d9e6ff;font:600 .82rem Manrope,sans-serif;cursor:pointer;transition:all .25s}
+.vm:hover{border-color:var(--glow);color:#fff}
+.vm.on{border-color:transparent;background:linear-gradient(135deg,#f6e3b4,#c8933f);color:#2a1a05;box-shadow:0 0 24px rgba(233,201,135,.55)}
+.vp-vaults{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:760px;margin:22px auto 0}
+.vault{--c:159,232,255;position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:26px 14px 22px;border:0;border-radius:22px;color:#fff;font-family:Manrope,sans-serif;cursor:pointer;background:radial-gradient(circle at 50% 28%,rgba(var(--c),.28),transparent 62%),rgba(6,10,40,.8);box-shadow:inset 0 0 0 1px rgba(var(--c),.4),0 18px 44px rgba(0,0,0,.5);transition:transform .35s,box-shadow .35s,filter .35s}
+.vault[data-major=Ministry]{--c:233,201,135}
+.vault-orb{position:relative;width:clamp(72px,18vw,96px);aspect-ratio:1;margin:20px 0 18px}
+.vault-core{position:absolute;inset:0;display:grid;place-items:center;border-radius:50%;font-size:clamp(1.7rem,5vw,2.4rem);color:rgb(var(--c));background:radial-gradient(circle,rgba(var(--c),.32),rgba(var(--c),.04) 70%);text-shadow:0 0 22px rgb(var(--c))}
+.vault-ring{position:absolute;border-radius:50%}
+.r1{inset:-14px;border:1px dashed rgba(var(--c),.75);animation:spin 22s linear infinite}
+.r2{inset:-30px;border:1px solid rgba(var(--c),.3);animation:spin 38s linear infinite reverse}
+.vault-name{font:italic 500 clamp(1.5rem,5vw,2rem) Fraunces,serif}
+.vault-state{display:inline-flex;align-items:center;gap:7px;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.07);font:600 .74rem Manrope,sans-serif;color:var(--text-light)}
+.vault-cta{margin-top:10px;padding:9px 18px;border-radius:999px;background:linear-gradient(135deg,rgb(var(--c)),#fff);color:#0a1238;font:700 .8rem Manrope,sans-serif;opacity:.25;transition:opacity .3s}
+.vault[data-state=ready]{animation:vglow 2.6s ease-in-out infinite}
+.vault[data-state=ready] .vault-cta{opacity:1}
+.vault[data-state=ready] .vault-state{color:#6df2b0}
+.vault[data-state=ready] .vault-state::before{content:'';width:8px;height:8px;border-radius:50%;background:#6df2b0;box-shadow:0 0 10px #6df2b0}
+.vault[data-state=ready] .r1{animation-duration:9s}
+.vault[data-state=wait] .vault-state{color:#ffb35c}
+.vault[data-state=none],.vault[data-state=off]{filter:saturate(.3) brightness(.8)}
+.vault[data-state=ready]:hover{transform:translateY(-8px) scale(1.03)}
+@keyframes vglow{50%{box-shadow:inset 0 0 0 1px rgba(var(--c),.8),0 18px 44px rgba(0,0,0,.5),0 0 60px rgba(var(--c),.45)}}
+.vault.shake{animation:shake .45s}
+@keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.vp-hint{position:relative;min-height:1.4em;margin-top:14px;font-size:.88rem;font-style:italic;color:var(--text-gold)}
+@media(max-width:520px){.vp-vaults{gap:12px}.vault{padding:20px 8px 18px}.vault-state{font-size:.68rem;text-align:center}}
+/* modal vault */
+.seal-ring{position:relative;width:92px;height:92px;margin:6px auto 22px;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle,rgba(159,232,255,.28),transparent 70%)}
+.seal-ring::before,.seal-ring::after{content:'';position:absolute;border-radius:50%}
+.seal-ring::before{inset:-8px;border:1px dashed rgba(159,232,255,.65);animation:spin 18s linear infinite}
+.seal-ring::after{inset:-20px;border:1px solid rgba(233,201,135,.35);animation:spin 40s linear infinite reverse}
+.modal-lock{margin:0;font-size:2.2rem;color:var(--glow);text-shadow:0 0 22px var(--glow)}
+.modal-card.unlocking .seal-ring{animation:burst .9s ease-out}
+.modal-card.unlocking .modal-lock{color:#e9c987;text-shadow:0 0 28px #e9c987}
+@keyframes burst{40%{transform:scale(1.2);filter:drop-shadow(0 0 30px #e9c987)}}
+#modal-title{font:italic 400 2rem Fraunces,serif;background:linear-gradient(#fff,#9fe8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
 </style>
 </head>
 <body>
@@ -258,7 +306,7 @@ h1,h2,h3,h4{font-family:Fraunces,Georgia,serif;color:#fff;line-height:1.15}
 <div id="passcode-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
 <div class="modal-card">
 <button type="button" class="btn-close-modal" onclick="closeModal()" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
-<i class="fa-solid fa-lock modal-lock"></i>
+<div class="seal-ring"><i class="fa-solid fa-lock modal-lock"></i></div>
 <h3 id="modal-title">MAJOR</h3>
 
 <div id="vault-view-1">
@@ -316,10 +364,7 @@ h1,h2,h3,h4{font-family:Fraunces,Georgia,serif;color:#fff;line-height:1.15}
 <div class="page-header">
 <h2>Academic Library</h2>
 <p class="page-sub">Class scrolls, shelved by day.</p>
-<div class="summary-actions">
-<button class="btn-summary" onclick="openModal('Auror')"><i class="fa-solid fa-shield"></i> Final Summary : Auror</button>
-<button class="btn-summary" onclick="openModal('Ministry')"><i class="fa-solid fa-scale-balanced"></i> Final Summary : Ministry</button>
-</div>
+<div class="vault-panel" id="vault-panel"><i class="sp" style="--x:6%;--y:18%;--d:3s">✦</i><i class="sp" style="--x:14%;--y:70%;--d:4.2s">✦</i><i class="sp" style="--x:30%;--y:12%;--d:3.6s">✦</i><i class="sp" style="--x:48%;--y:86%;--d:5s">✦</i><i class="sp" style="--x:66%;--y:10%;--d:4s">✦</i><i class="sp" style="--x:82%;--y:64%;--d:3.3s">✦</i><i class="sp" style="--x:93%;--y:22%;--d:4.6s">✦</i><i class="sp" style="--x:74%;--y:90%;--d:3.9s">✦</i><h3 class="vp-title">Final Summary</h3><p class="vp-sub">Pick a month, then open the vault of your major.</p><div class="vp-months" id="vault-months" role="group" aria-label="Month"></div><div class="vp-vaults"><button type="button" class="vault" data-major="Auror" data-state="none" onclick="vaultOpen('Auror')"><span class="vault-orb"><span class="vault-ring r1"></span><span class="vault-ring r2"></span><span class="vault-core"><i class="fa-solid fa-shield-halved"></i></span></span><b class="vault-name">Auror</b><span class="vault-state">Choose a month</span><span class="vault-cta"><i class="fa-solid fa-key"></i> Open vault</span></button><button type="button" class="vault" data-major="Ministry" data-state="none" onclick="vaultOpen('Ministry')"><span class="vault-orb"><span class="vault-ring r1"></span><span class="vault-ring r2"></span><span class="vault-core"><i class="fa-solid fa-scale-balanced"></i></span></span><b class="vault-name">Ministry</b><span class="vault-state">Choose a month</span><span class="vault-cta"><i class="fa-solid fa-key"></i> Open vault</span></button></div><p class="vp-hint" id="vault-hint" role="status"></p></div>
 </div>
 <div class="filter-bar">
 <div class="filter-group"><span class="filter-label">Month</span><select id="lib-month" class="filter-select" onchange="filterLibrary()"></select></div>
@@ -705,7 +750,7 @@ currentSummaryMonth = fMonth;
 
 expectedToken = (summaryRecord[5] || "").trim();
 
-document.getElementById('modal-title').innerText = `MAJOR: ${major.toUpperCase()}`;
+document.getElementById('modal-title').innerText = `${major} Vault`;
 document.getElementById('student-name').value = "";
 document.getElementById('vault-code-input').value = "";
 document.getElementById('passcode-input').value = "";
@@ -1216,6 +1261,22 @@ document.addEventListener('pointerout',e=>{const w=e.target.closest&&e.target.cl
 </script>
 <script>
 (()=>{const el=document.getElementById('classguide-content');if(el)new MutationObserver(()=>{[...el.querySelectorAll('.pt')].forEach((n,i)=>n.style.setProperty('--i',i))}).observe(el,{childList:true})})();
+</script>
+<script>
+(()=>{const MJ=['Auror','Ministry'],$=id=>document.getElementById(id),MSG={none:'Pick a month above to open a vault.',off:'No Final Summary has been published for this month yet.',wait:'This summary is still waiting for approval.'};
+function sync(){const sel=$('lib-month'),box=$('vault-months');if(!sel||!box)return;const m=sel.value,opts=[...sel.options].filter(o=>o.value!=='All');
+if(box.dataset.n!==String(opts.length)){box.innerHTML=opts.map(o=>'<button type="button" class="vm" data-m="'+o.value+'">'+o.text+'</button>').join('');box.dataset.n=opts.length}
+box.querySelectorAll('.vm').forEach(b=>b.classList.toggle('on',b.dataset.m===m));$('vault-hint').textContent='';
+MJ.forEach(mj=>{const v=document.querySelector('.vault[data-major="'+mj+'"]');let st='none',tx='Choose a month';
+try{if(m!=='All'){if(!db.finalSummaries){tx='Syncing archives'}else{const r=db.finalSummaries.slice(1).find(w=>w[0]&&w[1]&&w[0].trim().toLowerCase()===m.toLowerCase()&&w[1].trim().toLowerCase()===mj.toLowerCase());if(!r){st='off';tx='Not available yet'}else{const t=(r[3]||'').trim().toLowerCase();if(t==='approved'||t==='acc'){st='ready';tx='Ready to open'}else{st='wait';tx=r[3]||'Pending'}}}}}catch(e){}
+v.dataset.state=st;v.querySelector('.vault-state').textContent=tx})}
+window.vaultOpen=mj=>{const v=document.querySelector('.vault[data-major="'+mj+'"]');if(v.dataset.state==='ready'){openModal(mj);return}
+$('vault-hint').textContent=MSG[v.dataset.state]||'The archives are still syncing. Try again in a moment.';v.classList.remove('shake');void v.offsetWidth;v.classList.add('shake')};
+$('vault-months').addEventListener('click',e=>{const b=e.target.closest('.vm');if(!b)return;$('lib-month').value=b.dataset.m;filterLibrary();sync()});
+$('lib-month').addEventListener('change',sync);
+new MutationObserver(sync).observe($('lib-month'),{childList:true});
+new MutationObserver(sync).observe($('library-content'),{childList:true});sync();
+const vp=window.verifyPasscode;window.verifyPasscode=function(){const ok=expectedToken!==''&&$('passcode-input').value.trim()===expectedToken;if(ok){const c=document.querySelector('.modal-card'),i=c.querySelector('.modal-lock');c.classList.add('unlocking');i.className='fa-solid fa-lock-open modal-lock';setTimeout(()=>{c.classList.remove('unlocking');i.className='fa-solid fa-lock modal-lock'},1600)}vp()}})();
 </script>
 </body>
 </html>
