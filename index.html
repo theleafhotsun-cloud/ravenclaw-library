@@ -1,10 +1,14 @@
-<!DOCTYPE html>
+`<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>House of Ravenclaw - Library</title>
+<title>Library of Ravenclaw</title>
 <meta name="theme-color" content="#080f24">
+<meta name="description" content="Ravenclaw Library: class scrolls, schedules and reports.">
+<meta property="og:title" content="House of Ravenclaw - Library">
+<!-- PENGATURAN: ubah alamat API di sini saja -->
+<script>window.RC_API = 'https://script.google.com/macros/s/AKfycbxINBMGGSDz7kAG4iLnKSU0fzS-g7C6Bv-JfxPbqi6_gJasm6wqLP3-kTgcNdGOKSqp7w/exec';</script>
 <link rel="icon" href="https://lh3.googleusercontent.com/d/1eQXRQppRAoOD6T9FLiRMVJSaHZSZ1E-a=s64">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,7 +25,7 @@ h1,h2,h3,h4{font-family:Cinzel,serif;color:var(--text-gold);line-height:1.15}
 .orb.a{width:380px;height:380px;background:#2540a8;top:-90px;left:-90px}
 .orb.b{width:440px;height:440px;background:#1a1f6b;bottom:-110px;right:-110px}
 .hp-nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:16px;padding:10px 16px;background:linear-gradient(rgba(3,5,12,.9),rgba(3,5,12,.62));backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid rgba(224,198,143,.2)}
-.hp-brand{display:flex;align-items:center;gap:10px;flex-shrink:0;font:700 14px Cinzel,serif;letter-spacing:.2em;color:var(--text-gold)}
+.hp-brand{text-decoration:none;display:flex;align-items:center;gap:10px;flex-shrink:0;font:700 14px Cinzel,serif;letter-spacing:.2em;color:var(--text-gold)}
 .hp-brand img{width:34px;height:34px;object-fit:contain}
 .hp-brand span{display:none}
 .nav-menu{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0}
@@ -163,7 +167,7 @@ h1,h2,h3,h4{font-family:Cinzel,serif;color:var(--text-gold);line-height:1.15}
 </div>
 
 <header class="hp-nav">
-<div class="hp-brand"><img src="https://lh3.googleusercontent.com/d/1eQXRQppRAoOD6T9FLiRMVJSaHZSZ1E-a=w80" alt=""><span>HOUSE OF RAVENCLAW</span></div>
+<a class="hp-brand" href="/" aria-label="House of Ravenclaw home"><img src="https://lh3.googleusercontent.com/d/1eQXRQppRAoOD6T9FLiRMVJSaHZSZ1E-a=w80" alt=""><span>HOUSE OF RAVENCLAW</span></a>
 <nav class="nav-menu" aria-label="Library sections">
 <button type="button" class="nav-item active" onclick="switchTab('library')"><i class="fa-solid fa-book-open"></i> <span class="nav-txt">Library</span></button>
 <button type="button" class="nav-item" onclick="switchTab('classes')"><i class="fa-solid fa-scroll"></i> <span class="nav-txt">Class Information</span></button>
@@ -563,7 +567,7 @@ let w = weekStr.toLowerCase();
 return w.includes('1') || w.includes('one') || w.includes('first') || w.includes('2') || w.includes('two') || w.includes('second');
 }
 function openModal(major) {
-if (!db.finalSummaries) { alert("The archives are still loading. Try again in a moment."); return; }
+if (!liveLoaded) { alert("The archives are still syncing. Try again in a moment."); return; }
 const fMonth = document.getElementById('lib-month').value;
 if (fMonth === "All") {
 alert("Please select a specific Month from the filter first to access the Final Summary.");
@@ -625,8 +629,9 @@ const btn = document.getElementById('request-btn');
 btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating...';
 btn.disabled = true;
 
-google.script.run
-.withSuccessHandler(function(response) {
+callApi('logAccess', { name: studentName, major: currentTargetSummary, month: currentSummaryMonth, status: "Token Requested (Vault: " + vaultCode + ")" })
+.then(function(res) {
+if (!res || !res.success) throw new Error((res && res.error) || 'The request could not be recorded.');
 btn.innerHTML = '<i class="fa-solid fa-key"></i> Generate Passcode';
 btn.disabled = false;
 document.getElementById('vault-view-1').style.display = "none";
@@ -634,7 +639,11 @@ document.getElementById('generated-passcode').innerText = expectedToken;
 document.getElementById('vault-view-2').style.display = "block";
 document.getElementById('passcode-input').focus();
 })
-.logAccessRequest(studentName, currentTargetSummary, currentSummaryMonth, "Token Requested (Vault: " + vaultCode + ")");
+.catch(function(err) {
+btn.innerHTML = '<i class="fa-solid fa-key"></i> Generate Passcode';
+btn.disabled = false;
+alert('Could not record your request: ' + (err && err.message ? err.message : err));
+});
 }
 
 function verifyPasscode() {
@@ -814,43 +823,84 @@ l.style.display = 'flex';
 l.innerHTML = '<img src="https://lh3.googleusercontent.com/d/1itBW7VYne3TZcKNmiia7X2HxGn-LSD33=w256" alt=""><p>The archives did not answer.</p><p class="load-err"></p><button type="button" class="glowing-btn" style="width:auto;padding:10px 22px;" onclick="location.reload()">Try again</button>';
 l.querySelector('.load-err').textContent = String(msg || 'Unknown error');
 }
-function guard(fn) {
-return function(r) { try { fn(r); } catch (e) { showLoadError('Script error: ' + (e && e.message ? e.message : e)); } };
+const CACHE_KEY = 'rc:library:v1';
+const FILTER_IDS = ['lib-month', 'lib-week', 'lib-level', 'lib-major', 'cls-month', 'cls-week', 'cls-level', 'cls-major', 'rep-major', 'rep-month', 'rep-year', 'gui-level', 'gui-sub'];
+let liveLoaded = false;
+let applied = false;
+
+async function callApi(action, params) {
+const qs = new URLSearchParams(Object.assign({ action: action }, params || {})).toString();
+const ctl = new AbortController();
+const timer = setTimeout(function() { ctl.abort(); }, 30000);
+let res;
+try { res = await fetch(window.RC_API + '?' + qs, { signal: ctl.signal }); }
+catch (e) { throw new Error(e && e.name === 'AbortError' ? 'The archives took too long to answer.' : 'Could not reach the archives. Check your connection and the API address.'); }
+finally { clearTimeout(timer); }
+if (!res.ok) throw new Error('The API answered with status ' + res.status + '.');
+const text = await res.text();
+try { return JSON.parse(text); }
+catch (e) { throw new Error('The API did not return data. In Apps Script, deploy the web app with "Execute as: Me" and "Who has access: Anyone".'); }
 }
 
-window.onload = () => {
-setTimeout(function() {
-const m = document.getElementById('loader-msg');
-if (m && document.getElementById('loader').style.display !== 'none') m.textContent = 'Still consulting the archives... the sheets are slow to answer.';
-}, 15000);
-google.script.run
-.withSuccessHandler(guard(function(response) {
-if(response.success) {
-db = response;
+// Vault codes and passcodes never go into persistent storage
+function slim(d) {
+const c = Object.assign({}, d);
+c.masterData = [(d.masterData || [])[0] || ['ID', 'Vault Code']];
+c.finalSummaries = (d.finalSummaries || []).map(function(r) { const x = r.slice(); x[5] = ''; return x; });
+return c;
+}
+
+function applyData(d) {
+const keep = {};
+if (applied) FILTER_IDS.forEach(function(id) { keep[id] = document.getElementById(id).value; });
+db = d;
 let allMonths = getCombinedUnique(db.library.slice(1), 1, db.classes.slice(1), 0);
 let allWeeks = getCombinedUnique(db.library.slice(1), 2, db.classes.slice(1), 1);
 populateStaticDropdown('lib-month', allMonths);
 populateStaticDropdown('cls-month', allMonths);
 populateStaticDropdown('lib-week', allWeeks);
 populateStaticDropdown('cls-week', allWeeks);
-
 populateDropdown(db.report.slice(1), 2, 'rep-major', 'All Majors');
 populateDropdown(db.report.slice(1), 0, 'rep-month', 'All Months');
 populateDropdown(db.report.slice(1), 1, 'rep-year', 'All Years');
-
 populateDropdown(db.classGuide.slice(1), 0, 'gui-level', 'All Levels');
 populateDropdown(db.classGuide.slice(1), 1, 'gui-sub', 'All Subjects');
-
-autoSelectCurrentDateFilters();
+if (applied) {
+FILTER_IDS.forEach(function(id) {
+const el = document.getElementById(id);
+if (keep[id] && Array.from(el.options).some(function(o) { return o.value === keep[id]; })) el.value = keep[id];
+});
+} else { autoSelectCurrentDateFilters(); }
+applied = true;
 filterLibrary();
 filterClasses();
 filterReport();
 filterClassGuide();
+}
+
+window.onload = () => {
+let cached = false;
+try {
+const c = localStorage.getItem(CACHE_KEY);
+if (c) { applyData(JSON.parse(c)); cached = true; document.getElementById('loader-msg').textContent = 'Syncing the latest scrolls...'; }
+} catch (e) { applied = false; try { localStorage.removeItem(CACHE_KEY); } catch (e2) {} }
+
+setTimeout(function() {
+const m = document.getElementById('loader-msg');
+if (m && !liveLoaded && document.getElementById('loader').style.display !== 'none') m.textContent = 'Still consulting the archives... the sheets are slow to answer.';
+}, 15000);
+
+callApi('getAllDatabase').then(function(res) {
+if (!res || !res.success) throw new Error((res && res.error) || 'Unknown error from the archives.');
+applyData(res);
+liveLoaded = true;
 document.getElementById('loader').style.display = 'none';
-} else { showLoadError(response && response.error); }
-})).withFailureHandler(function(err) {
-showLoadError(err && err.message ? err.message : err);
-}).getAllDatabase();
+try { localStorage.setItem(CACHE_KEY, JSON.stringify(slim(res))); } catch (e) {}
+}).catch(function(err) {
+const msg = err && err.message ? err.message : String(err);
+if (cached) { document.getElementById('loader').style.display = 'none'; alert('Could not refresh the archives. Showing the last saved scrolls. (' + msg + ')'); }
+else showLoadError(msg);
+});
 };
 
 function resetLibraryFilters() {
