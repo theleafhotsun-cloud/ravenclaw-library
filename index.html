@@ -103,22 +103,40 @@ h1,h2,h3,h4{font-family:Cinzel,serif;color:var(--text-gold);line-height:1.15}
 .modal-ok{margin-bottom:8px;font-weight:700;color:#1b7a43}
 .token-box{margin-bottom:12px;padding:12px;border:1px dashed #8a6a2c;border-radius:8px;background:rgba(120,80,20,.12);font:600 1.1rem 'Azeret Mono',monospace;letter-spacing:.08em;word-break:break-all;user-select:all;color:var(--bg-main)}
 .btn-close-modal{position:absolute;top:10px;right:12px;padding:6px;border:0;background:none;font-size:1.2rem;color:var(--ink);cursor:pointer}
-.loading-screen{position:fixed;inset:0;z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center;background:var(--night)}
-.loading-screen img{width:84px;animation:glow 2.4s ease-in-out infinite alternate}
+.loading-screen{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:14px;margin-bottom:1.5rem;padding:16px 20px;text-align:center;border:1px dashed rgba(224,198,143,.5);border-radius:10px 10px 30px 10px;background:rgba(8,15,36,.7)}
+.loading-screen img{width:44px;animation:glow 2.4s ease-in-out infinite alternate}
 .loading-screen p{font-size:1.05rem;font-style:italic;color:var(--text-gold)}
-.load-err{max-width:440px;font:.8rem/1.5 'Azeret Mono',monospace;color:var(--text-gold-light);word-break:break-word}
+.load-err{flex-basis:100%;max-width:none;font:.8rem/1.5 'Azeret Mono',monospace;color:var(--text-gold-light);word-break:break-word}
+#stars{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.hp-hero{position:relative;min-height:68vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:56px 20px 100px}
+.hp-hero>*{animation:rise 1s cubic-bezier(.2,.7,.2,1) both}
+.hp-hero>:nth-child(2){animation-delay:.12s}.hp-hero>:nth-child(3){animation-delay:.24s}.hp-hero>:nth-child(4){animation-delay:.36s}.hp-hero>:nth-child(5){animation-delay:.48s}
+@keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+.hp-crest{width:clamp(110px,22vmin,180px);margin-bottom:22px;filter:drop-shadow(0 0 28px rgba(255,255,255,.7))}
+.hp-motto{margin-bottom:16px;font:500 11px 'Azeret Mono',monospace;letter-spacing:.35em;color:var(--text-gold)}
+.hp-h{font-family:Cinzel,serif;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#fff;line-height:1.1}
+.hp-mega{font-size:clamp(44px,12vw,128px);letter-spacing:.06em;background:linear-gradient(#fff,#E0C68F);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 20px rgba(224,198,143,.35))}
+.hp-tag{max-width:34rem;margin-top:16px;font-style:italic;color:rgba(245,240,233,.8)}
+.hp-cta{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:30px}
+.hp-btn{display:inline-block;padding:14px 32px;border-radius:999px;font:700 13px 'Plus Jakarta Sans',sans-serif;letter-spacing:.25em;text-transform:uppercase;cursor:pointer;transition:all .3s}
+.hp-btn.solid{background:var(--text-gold);color:var(--bg-main);border:1px solid var(--text-gold)}
+.hp-btn.line{background:transparent;color:var(--text-gold);border:1px solid var(--text-gold)}
+.hp-btn:hover{box-shadow:0 0 24px rgba(224,198,143,.6);transform:translateY(-2px)}
+.hp-down{position:absolute;bottom:110px;font-size:22px;color:var(--text-gold);animation:hint 2s ease-in-out infinite!important}
+@keyframes hint{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+.band{position:relative;min-height:60vh;background:#17183f}
+.sk{height:90px;margin-top:-89px;position:relative;z-index:2;pointer-events:none;background:#17183f;clip-path:polygon(0 100%,0 70%,6% 70%,6% 50%,7% 40%,8% 50%,8% 70%,15% 70%,15% 45%,16.5% 20%,18% 45%,18% 70%,30% 70%,30% 55%,34% 55%,34% 70%,48% 70%,48% 35%,49.5% 0,51% 35%,51% 70%,62% 70%,62% 50%,63% 38%,64% 50%,64% 70%,78% 70%,78% 42%,79.5% 15%,81% 42%,81% 70%,92% 70%,92% 55%,100% 55%,100% 100%)}
+.main-content{scroll-margin-top:64px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:2000;max-width:min(92vw,420px);padding:12px 18px;border:1px solid var(--text-gold);border-radius:10px 10px 22px 10px;background:#0c1038;box-shadow:0 0 24px rgba(224,198,143,.3);font-size:.9rem;text-align:center;color:var(--text-gold-light)}
 @keyframes glow{from{filter:drop-shadow(0 0 6px rgba(224,198,143,.25))}to{filter:drop-shadow(0 0 22px rgba(224,198,143,.8))}}
 @media(max-width:768px){.main-content{padding:1.5rem 1rem 4rem}.content-box{padding:1.25rem}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
+<canvas id="stars" aria-hidden="true"></canvas>
 <div class="orb a"></div><div class="orb b"></div>
 
-<div id="loader" class="loading-screen">
-<img src="https://lh3.googleusercontent.com/d/1itBW7VYne3TZcKNmiia7X2HxGn-LSD33=w256" alt="Ravenclaw crest">
-<p id="loader-msg">Consulting the Archives...</p>
-</div>
 
 <div id="passcode-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
 <div class="modal-card">
@@ -155,7 +173,27 @@ h1,h2,h3,h4{font-family:Cinzel,serif;color:var(--text-gold);line-height:1.15}
 </nav>
 </header>
 
-<main class="main-content">
+<div id="home-top">
+<section class="hp-hero">
+<img class="hp-crest" src="https://lh3.googleusercontent.com/d/1itBW7VYne3TZcKNmiia7X2HxGn-LSD33=w512" alt="Ravenclaw crest">
+<p class="hp-motto">WIT BEYOND MEASURE IS MAN’S GREATEST TREASURE</p>
+<h1 class="hp-h hp-mega">Ravenclaw</h1>
+<p class="hp-tag">The Academic Library. Class scrolls, schedules and reports, all in one tower.</p>
+<div class="hp-cta">
+<button type="button" class="hp-btn solid" onclick="document.getElementById('lib-top').scrollIntoView({behavior:'smooth'})">Enter the Library</button>
+<button type="button" class="hp-btn line" onclick="switchTab('classes')">Class Information</button>
+</div>
+<i class="fa-solid fa-chevron-down hp-down" aria-hidden="true"></i>
+</section>
+<div class="sk" aria-hidden="true"></div>
+</div>
+<div class="band">
+<main class="main-content" id="lib-top">
+<div id="loader" class="loading-screen">
+<img src="https://lh3.googleusercontent.com/d/1itBW7VYne3TZcKNmiia7X2HxGn-LSD33=w128" alt="Ravenclaw crest">
+<p id="loader-msg">Consulting the Archives...</p>
+</div>
+
 <!-- 1. LIBRARY -->
 <section id="library" class="section active">
 <div class="page-header">
@@ -469,6 +507,7 @@ Apabila sudah dikonfirmasi, kamu diperbolehkan meninggalkan ruang ujian (<em>lef
 </div>
 </section>
 </main>
+</div>
 
 <script>
 let db = {};
@@ -524,6 +563,7 @@ let w = weekStr.toLowerCase();
 return w.includes('1') || w.includes('one') || w.includes('first') || w.includes('2') || w.includes('two') || w.includes('second');
 }
 function openModal(major) {
+if (!db.finalSummaries) { alert("The archives are still loading. Try again in a moment."); return; }
 const fMonth = document.getElementById('lib-month').value;
 if (fMonth === "All") {
 alert("Please select a specific Month from the filter first to access the Final Summary.");
@@ -734,6 +774,7 @@ document.querySelectorAll('.section').forEach(el => el.classList.remove('active'
 document.querySelectorAll(`[onclick="switchTab('${tabId}')"]`).forEach(el => el.classList.add('active'));
 document.getElementById(tabId).classList.add('active');
 window.scrollTo({ top: 0 });
+document.getElementById('home-top').style.display = tabId === 'library' ? '' : 'none';
 }
 
 function getCombinedUnique(data1, col1, data2, col2) {
@@ -758,6 +799,14 @@ data.forEach(row => { if(row[colIndex]) uniqueValues.add(row[colIndex].trim()); 
 select.innerHTML = `<option value="All">${defaultText}</option>`;
 Array.from(uniqueValues).filter(Boolean).forEach(val => { select.innerHTML += `<option value="${val}">${val}</option>`; });
 }
+
+function toast(msg) {
+const t = document.createElement('div');
+t.className = 'toast'; t.setAttribute('role', 'alert'); t.textContent = String(msg);
+document.body.appendChild(t);
+setTimeout(function() { t.remove(); }, 4500);
+}
+window.alert = toast;
 
 function showLoadError(msg) {
 const l = document.getElementById('loader');
@@ -805,6 +854,7 @@ showLoadError(err && err.message ? err.message : err);
 };
 
 function filterLibrary() {
+if (!db.library) return;
 const fMonth = document.getElementById('lib-month').value;
 const fWeek = document.getElementById('lib-week').value;
 const fLevel = document.getElementById('lib-level').value;
@@ -856,6 +906,7 @@ container.innerHTML = html;
 }
 
 function filterClasses() {
+if (!db.library) return;
 const fMonth = document.getElementById('cls-month').value;
 const fWeek = document.getElementById('cls-week').value;
 const fLevel = document.getElementById('cls-level').value;
@@ -939,6 +990,7 @@ container.innerHTML = html;
 }
 
 function filterReport() {
+if (!db.library) return;
 const fMaj = document.getElementById('rep-major').value;
 const fMon = document.getElementById('rep-month').value;
 const fYr = document.getElementById('rep-year').value;
@@ -974,6 +1026,7 @@ ${linkBtn}
 }
 
 function filterClassGuide() {
+if (!db.library) return;
 const fLvl = document.getElementById('gui-level').value;
 const fSub = document.getElementById('gui-sub').value;
 const container = document.getElementById('classguide-content');
@@ -1011,6 +1064,17 @@ container.innerHTML += `
 </tr>`;
 });
 }
+(function() {
+const c = document.getElementById('stars');
+if (!c || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+const x = c.getContext('2d'); let S = [], w, h;
+function fit() { w = c.width = innerWidth; h = c.height = innerHeight; S = [];
+for (let i = 0, n = Math.min(110, Math.round(w * h / 9000)); i < n; i++) S.push({ x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.3 + .3, p: Math.random() * 6.28, s: .4 + Math.random() * 1.2 }); }
+function draw(t) { x.clearRect(0, 0, w, h);
+S.forEach(o => { x.fillStyle = 'rgba(224,198,143,' + (.25 + .6 * Math.abs(Math.sin(o.p + t / 1000 * o.s))).toFixed(2) + ')'; x.beginPath(); x.arc(o.x, o.y, o.r, 0, 6.283); x.fill(); });
+requestAnimationFrame(draw); }
+fit(); addEventListener('resize', fit); requestAnimationFrame(draw);
+})();
 </script>
 </body>
 </html>
