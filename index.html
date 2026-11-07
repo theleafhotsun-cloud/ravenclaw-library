@@ -63,7 +63,7 @@ h1,h2,h3,h4{font-family:Fraunces,Georgia,serif;color:#fff;line-height:1.15}
 .shelf-row{display:flex;flex-wrap:wrap;gap:30px 44px;justify-content:center;perspective:1100px;padding:30px 10px 96px}
 .wood-shelf{height:1px;background:linear-gradient(90deg,transparent,rgba(159,232,255,.6),transparent);box-shadow:0 0 26px 2px rgba(159,232,255,.25)}
 .tome{position:relative;width:clamp(138px,40vw,162px);height:230px;transform-style:preserve-3d;animation:levit 5s ease-in-out infinite alternate}
-.tome:nth-child(2n){animation-duration:6.2s;animation-delay:-1.7s}.tome:nth-child(3n){animation-delay:-3.2s}
+
 @keyframes levit{to{transform:translateY(-14px)}}
 .tome::after{content:'';position:absolute;left:6%;right:6%;bottom:-30px;height:16px;border-radius:50%;background:radial-gradient(ellipse,rgba(159,232,255,.5),transparent 70%);filter:blur(4px)}
 .tome-in{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateY(-28deg) rotateX(3deg);transition:transform .6s cubic-bezier(.2,.8,.2,1)}
@@ -166,6 +166,61 @@ h1,h2,h3,h4{font-family:Fraunces,Georgia,serif;color:#fff;line-height:1.15}
 @keyframes hint{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
 .band{position:relative}.sk{display:none}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ===== v3: lebih hidup ===== */
+@keyframes enter{from{opacity:0;translate:0 70px;rotate:7deg;scale:.85}}
+.shelf-row{gap:60px 36px;padding:34px 10px 70px;perspective:1300px}
+.tome{--w:158px;--h:232px;--tilt:-2deg;width:calc(var(--w)*var(--s,1));height:calc(var(--h)*var(--s,1));margin:0 8px;cursor:pointer;animation:enter .9s cubic-bezier(.2,.9,.3,1.2) backwards,levit 5.5s ease-in-out infinite alternate;animation-delay:calc(var(--i,0)*60ms),calc(var(--i,0)*-900ms)}
+.tome:nth-child(3n+1){--w:150px;--h:222px;--tilt:-4deg}.tome:nth-child(3n+2){--w:166px;--h:248px;--tilt:3deg}.tome:nth-child(3n){--w:156px;--h:212px;--tilt:-1.5deg}
+@keyframes levit{from{transform:translateY(0) rotate(var(--tilt))}to{transform:translateY(-16px) rotate(calc(var(--tilt)*-1.3))}}
+.tome-in{transform:rotateY(-32deg) rotateX(4deg)}
+.tome:nth-child(2n) .tome-in{transform:rotateY(-20deg) rotateX(4deg)}
+.tome.open .tome-in,.tome:focus-within .tome-in{transform:translateX(34px) rotateY(-14deg) rotateX(6deg)}
+.cover{position:absolute;inset:0;transform-style:preserve-3d;transform-origin:left center;transform:translateZ(17px);transition:transform .8s cubic-bezier(.3,.9,.3,1.1)}
+.tome.open .cover{transform:translateZ(17px) rotateY(-128deg)}
+@media(hover:hover){.tome:hover .tome-in{transform:translateX(34px) rotateY(-14deg) rotateX(6deg)}.tome:hover .cover{transform:translateZ(17px) rotateY(-128deg)}}
+.cov-out{inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:18px 16px;border-radius:2px 8px 8px 2px;background:linear-gradient(115deg,rgba(255,255,255,.28),transparent 38%),linear-gradient(rgba(5,8,30,.28),rgba(5,8,30,.28)),var(--bg);box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),0 0 40px rgba(159,232,255,.12)}
+.cov-in{inset:0;transform:rotateY(180deg);border-radius:8px 2px 2px 8px;background:linear-gradient(rgba(5,8,30,.55),rgba(5,8,30,.55)),var(--bg)}
+.leaf{top:4px;bottom:4px;left:3px;right:2px;transform:translateZ(13px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:14px;text-align:center;border-radius:2px 5px 5px 2px;background:repeating-linear-gradient(0deg,rgba(27,39,102,.07) 0 1px,transparent 1px 22px),linear-gradient(#fffdf5,#efe8d2);color:#1b2766}
+.leaf>i{font-size:1.6rem;color:#8a5d1f}.lf-t{font:italic 500 .95rem Fraunces,serif}
+.leaf .book-btn{width:100%;background:#1b2766;border-color:#1b2766;color:#f6e3b4}
+.leaf span:not(.lf-t){color:#8a8472!important}
+.spine{display:flex;align-items:center;justify-content:center}
+.spine b{display:block;writing-mode:vertical-rl;max-height:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:12px 0;font:600 .8rem Fraunces,serif;color:#f6e3b4}
+/* kelas: kartu penyihir holografik */
+.board{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:30px 24px;perspective:1300px}
+.wz{position:relative;height:345px;cursor:pointer;animation:enter .8s cubic-bezier(.2,.9,.3,1.2) backwards,bob 6s ease-in-out infinite alternate;animation-delay:calc(var(--i,0)*70ms),calc(var(--i,0)*-800ms)}
+.wz:nth-child(odd){--r:-1.6deg}.wz:nth-child(even){--r:1.6deg}
+@keyframes bob{from{transform:translateY(0) rotate(var(--r,0deg))}to{transform:translateY(-10px) rotate(calc(var(--r,0deg)*-1))}}
+.wz-in{position:absolute;inset:0;transform-style:preserve-3d;transform:rotateX(var(--rx,0deg)) rotateY(calc(var(--ry,0deg) + var(--fl,0deg)));transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.wz.flip{--fl:180deg}
+.wz-f{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px;overflow:hidden}
+.wz-front{display:flex;flex-direction:column;padding:12px;background:linear-gradient(160deg,#2a3a8a,#0d143f);box-shadow:0 0 0 2px #e9c987,0 0 0 5px #0a1038,0 0 0 6px rgba(233,201,135,.6),0 18px 40px rgba(0,0,0,.55)}
+.wz-front::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:.7;mix-blend-mode:color-dodge;background:linear-gradient(115deg,transparent 20%,rgba(255,120,200,.3) 35%,rgba(120,220,255,.32) 50%,rgba(255,240,140,.3) 65%,transparent 80%) var(--mx,50%) var(--my,50%)/250% 250%;animation:holo 7s ease-in-out infinite alternate}
+.wz:hover .wz-front::after{animation:none}
+@keyframes holo{from{background-position:0 0}to{background-position:100% 100%}}
+.wz-top{display:flex;justify-content:space-between;align-items:center;padding:2px 4px 8px;font:600 .74rem Manrope,sans-serif;color:#f6e3b4}
+.wz-art{flex:1;display:grid;place-items:center;border-radius:10px;background:var(--bg);box-shadow:inset 0 0 0 2px rgba(255,255,255,.25),inset 0 0 40px rgba(0,0,0,.45)}
+.wz-art i{font-size:4.2rem;color:rgba(255,255,255,.93);filter:drop-shadow(0 6px 12px rgba(0,0,0,.5));animation:wig 3.2s ease-in-out infinite alternate}
+@keyframes wig{from{transform:rotate(-9deg) scale(.95)}to{transform:rotate(9deg) scale(1.08) translateY(-4px)}}
+.wz h3{margin:12px 4px 2px;font:600 1.25rem/1.15 Fraunces,serif}
+.wz-prof{margin:0 4px;font-size:.78rem;color:var(--text-light)}
+.wz-foot{display:flex;justify-content:space-between;gap:8px;margin:10px 4px 2px;padding-top:8px;border-top:1px solid rgba(233,201,135,.3);font:600 .85rem 'Barlow Condensed',sans-serif}
+.wz-time{color:#ffcf70;letter-spacing:.06em}.wz-state{color:var(--st);text-align:right}
+.wz-back{transform:rotateY(180deg);display:flex;flex-direction:column;gap:12px;padding:20px 16px;overflow:auto;background:linear-gradient(160deg,#16225e,#0a1038);box-shadow:0 0 0 2px #e9c987,0 0 0 5px #0a1038,0 18px 40px rgba(0,0,0,.55)}
+.wz-back .task-content{margin:0}.wz-empty{font-style:italic;color:var(--text-light)}
+.wz-back .glowing-btn{margin-top:0}.wz-hint{margin-top:auto;text-align:center;font-size:.7rem;color:var(--text-light)}
+/* rapor: amplop beterbangan */
+.report-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:0 38px;padding:10px 0 20px;perspective:1000px}
+.env{width:min(250px,80vw);--r:-3deg;animation:enter .9s cubic-bezier(.2,.9,.3,1.2) backwards,sway 5.5s ease-in-out infinite alternate;animation-delay:calc(var(--i,0)*90ms),calc(var(--i,0)*-700ms)}
+.env:nth-child(3n+1){--r:-4deg;margin-top:34px}.env:nth-child(3n+2){--r:3deg}.env:nth-child(3n){--r:-2deg;margin-top:18px}
+.env:hover{animation-play-state:paused}
+@keyframes sway{from{transform:translateY(0) rotate(var(--r))}to{transform:translateY(-16px) rotate(calc(var(--r)*-1))}}
+.env-seal{animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 4px 12px rgba(0,0,0,.5),0 0 26px 6px rgba(233,201,135,.7)}}
+/* panduan O.W.L: rata kiri-kanan */
+.content-box p,.content-box li{text-align:justify;text-justify:inter-word;hyphens:auto;-webkit-hyphens:auto}
+@media(max-width:480px){.shelf-row{--s:.84;gap:48px 22px;padding-bottom:60px}.tome{margin:0 4px}.book-title{font-size:1.02rem}.content-box{padding:1.6rem 1.2rem}}
 </style>
 </head>
 <body>
@@ -275,7 +330,7 @@ h1,h2,h3,h4{font-family:Fraunces,Georgia,serif;color:#fff;line-height:1.15}
 </select>
 </div>
 </div>
-<div class="board-head"><span>Schedule</span><span>Subject</span><span>Level</span><span>Status</span><span></span></div><div id="classes-content" class="board"></div>
+<div id="classes-content" class="board"></div>
 </section>
 
 <section id="report" class="section">
@@ -314,7 +369,7 @@ h1,h2,h3,h4{font-family:Fraunces,Georgia,serif;color:#fff;line-height:1.15}
 <p class="page-sub">Panduan Ordinary Wizarding Level: peraturan, syarat, dan ketentuan ujian.</p>
 </div>
 
-<div class="content-box">
+<div class="content-box" lang="id">
 <h3>Tentang</h3>
 <p><em>Ordinary Wizarding Level</em> adalah ujian kenaikan kelas yang ada di Hogwarts. <em>Ordinary Wizarding Level</em> biasanya dilakukan setiap satu bulan sekali, tepatnya pada akhir atau awal bulan baru. Ujian ini perlu diikuti oleh seluruh murid yang berada di bangku kelas 1 sampai dengan bangku kelas 6.</p>
 <p>Apabila murid tidak mengikuti <em>Ordinary Wizarding Level</em>, maka murid yang bersangkutan tidak dapat naik ke kelas yang lebih tinggi. Oleh karena itu, pastikan kamu telah memahami seluruh ketentuan dan mempersiapkan kebutuhan yang diperlukan sebelum mengikuti ujian.</p>
@@ -977,7 +1032,7 @@ let rawText = (row[4] || "").toString().trim();
 let extracted = extractLinkAndName(rawText);
 let linkBtn = extracted.url ? `<a href="${extracted.url}" target="_blank" class="book-btn" onclick="event.stopPropagation();"><i class="fa-solid fa-book-open-reader"></i> Read The Book</a>` : `<span style="font-size:0.7rem; color: rgba(255,255,255,0.5);">Unavailable</span>`;
 
-html += `<div class="tome" style="--bg:${style.bg}"><div class="tome-in"><div class="face front"><i class="fa-solid ${style.icon} book-icon"></i><div><div class="book-title">${subjectStr}</div><div class="book-major">${getMajor(subjectStr)}</div></div></div><div class="face spine"></div><div class="face back"></div><div class="face pages"></div></div><div class="tome-act">${linkBtn}</div></div>`;
+html += `<div class="tome" style="--bg:${style.bg}" onclick="this.classList.toggle('open')"><div class="tome-in"><div class="face back"></div><div class="face spine"><b>${subjectStr}</b></div><div class="face pages"></div><div class="face leaf"><i class="fa-solid ${style.icon}"></i><span class="lf-t">${getMajor(subjectStr)}</span>${linkBtn}</div><div class="cover"><div class="face cov-out"><i class="fa-solid ${style.icon} book-icon"></i><div><div class="book-title">${subjectStr}</div><div class="book-major">${getMajor(subjectStr)}</div></div></div><div class="face cov-in"></div></div></div></div>`;
 });
 html += `</div><div class="wood-shelf"></div></div>`;
 }
@@ -1039,7 +1094,7 @@ let status = getStatusInfo(statusRaw);
 let linkBtn = extractAndRenderButton(linkRaw, "Open Detail", "fa-wand-magic-sparkles", "width: auto; padding: 6px 12px; font-size:0.75rem;");
 let taskHtml = taskRaw ? formatTaskContent(taskRaw) : "";
 
-dayHtml += `<div class="dep" style="--st:${status.color}"><div class="dep-time">${deadlineRaw}</div><div class="dep-main"><b>${base.subject}</b><small><i class="fa-solid fa-user-tie"></i> ${base.prof}</small>${taskHtml}</div><div class="dep-lvl">${base.level} ${base.major}</div><div class="dep-st"><i class="fa-solid ${status.icon}"></i> ${status.formattedText}</div><div>${linkBtn}</div></div>`;
+dayHtml += `<div class="wz" style="--st:${status.color};--bg:${getBookCoverStyle(base.subject).bg}" onclick="this.classList.toggle('flip')"><div class="wz-in"><div class="wz-f wz-front"><div class="wz-top"><span>${base.level} ${base.major}</span><i class="fa-solid ${status.icon}" style="color:var(--st)"></i></div><div class="wz-art"><i class="fa-solid ${getBookCoverStyle(base.subject).icon}"></i></div><h3>${base.subject}</h3><p class="wz-prof"><i class="fa-solid fa-user-tie"></i> ${base.prof}</p><div class="wz-foot"><span class="wz-time">${deadlineRaw}</span><span class="wz-state">${status.formattedText}</span></div></div><div class="wz-f wz-back">${taskHtml||'<p class="wz-empty">Tidak ada tugas minggu ini.</p>'}<div>${linkBtn}</div><small class="wz-hint">Ketuk untuk membalik</small></div></div></div>`;
 classesRendered++;
 });
 
@@ -1139,6 +1194,11 @@ fit(); addEventListener('resize', fit); requestAnimationFrame(draw);
 const rs=()=>{W=c.width=innerWidth;H=c.height=innerHeight};rs();addEventListener('resize',rs);
 addEventListener('pointermove',e=>{for(let i=0;i<3;i++)P.push({x:e.clientX,y:e.clientY,vx:(Math.random()-.5)*1.4,vy:Math.random()*1.2+.3,l:1,s:Math.random()*2+1,h:Math.random()<.5?190:42})},{passive:true});
 (function f(){x.clearRect(0,0,W,H);P=P.filter(p=>p.l>0);for(const p of P){p.x+=p.vx;p.y+=p.vy;p.vy+=.03;p.l-=.02;x.globalAlpha=p.l;x.fillStyle='hsl('+p.h+',90%,75%)';x.shadowColor=x.fillStyle;x.shadowBlur=10;x.beginPath();x.arc(p.x,p.y,p.s*p.l,0,7);x.fill()}requestAnimationFrame(f)})()})();
+</script>
+<script>
+['library-content','classes-content','report-content'].forEach(id=>{const el=document.getElementById(id);if(!el)return;new MutationObserver(()=>{[...el.querySelectorAll('.tome,.wz,.env')].forEach((n,i)=>n.style.setProperty('--i',i))}).observe(el,{childList:true,subtree:true})});
+document.addEventListener('pointermove',e=>{const w=e.target.closest&&e.target.closest('.wz');if(!w||e.pointerType==='touch')return;const r=w.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height,f=w.querySelector('.wz-front');w.style.setProperty('--ry',(x-.5)*22+'deg');w.style.setProperty('--rx',(.5-y)*18+'deg');f.style.setProperty('--mx',x*100+'%');f.style.setProperty('--my',y*100+'%')});
+document.addEventListener('pointerout',e=>{const w=e.target.closest&&e.target.closest('.wz');if(w&&!w.contains(e.relatedTarget)){w.style.setProperty('--ry','0deg');w.style.setProperty('--rx','0deg')}});
 </script>
 </body>
 </html>
