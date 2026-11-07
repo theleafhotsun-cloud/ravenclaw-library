@@ -1,486 +1,1001 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academic Portal - Ravenclaw Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            /* Ravenclaw Theme Colors */
-            --primary-blue: #0E1A40;
-            --accent-bronze: #946B2D;
-            --bg-color: #F4F5F7;
-            --card-bg: #FFFFFF;
-            --text-dark: #222222;
-            --text-light: #737373;
-            --shadow-soft: 0 15px 35px rgba(14, 26, 64, 0.08);
-            --shadow-3d: 5px 5px 15px rgba(0,0,0,0.1), -5px -5px 15px rgba(255,255,255,0.8);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-dark);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        h1, h2, h3 {
-            font-family: 'Playfair Display', serif;
-            color: var(--primary-blue);
-        }
-
-        /* --- SIDEBAR --- */
-        .sidebar {
-            width: 250px;
-            background-color: var(--card-bg);
-            padding: 2rem 1.5rem;
-            display: flex;
-            flex-direction: column;
-            border-right: 1px solid rgba(0,0,0,0.05);
-            z-index: 10;
-            box-shadow: 2px 0 20px rgba(0,0,0,0.02);
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 3rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--primary-blue);
-        }
-
-        .logo i {
-            color: var(--accent-bronze);
-            font-size: 1.8rem;
-        }
-
-        .nav-item {
-            padding: 12px 15px;
-            margin-bottom: 10px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 500;
-            color: var(--text-light);
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background-color: var(--primary-blue);
-            color: white;
-            box-shadow: 0 8px 20px rgba(14, 26, 64, 0.2);
-            transform: translateX(5px);
-        }
-
-        .nav-item.active i { color: var(--accent-bronze); }
-
-        /* --- MAIN CONTENT --- */
-        .main-content {
-            flex: 1;
-            padding: 2rem 3rem;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .search-bar {
-            background: var(--card-bg);
-            padding: 12px 20px;
-            border-radius: 20px;
-            width: 400px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: var(--shadow-3d);
-        }
-
-        .search-bar input {
-            border: none;
-            outline: none;
-            width: 100%;
-            font-family: 'Poppins', sans-serif;
-            background: transparent;
-        }
-
-        /* --- SECTION CONTAINERS --- */
-        .section {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-        .section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- 3D CARDS (Library & Class) --- */
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-top: 1.5rem;
-        }
-
-        .book-card {
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 16px;
-            box-shadow: var(--shadow-soft);
-            text-align: center;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            position: relative;
-        }
-
-        .book-card:hover {
-            transform: translateY(-10px) scale(1.03);
-            box-shadow: 0 20px 40px rgba(14, 26, 64, 0.15);
-        }
-
-        .book-cover {
-            width: 100%;
-            height: 220px;
-            background: linear-gradient(135deg, var(--primary-blue), #1a2a6c);
-            border-radius: 10px;
-            margin-bottom: 15px;
-            box-shadow: inset -5px -5px 15px rgba(0,0,0,0.3), 5px 5px 15px rgba(0,0,0,0.2); /* 3D Book Effect */
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent-bronze);
-            font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
-            padding: 10px;
-        }
-        
-        .book-cover::before {
-            content: '';
-            position: absolute;
-            left: 5px;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: rgba(255,255,255,0.2);
-        }
-
-        /* --- TABLES (Rapor & Panduan) --- */
-        .data-table-container {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: var(--shadow-soft);
-            margin-top: 1rem;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-
-        th {
-            color: var(--accent-bronze);
-            font-weight: 600;
-        }
-
-        tr:hover td {
-            background-color: rgba(14, 26, 64, 0.03);
-        }
-
-        /* Loading State */
-        .loading {
-            text-align: center;
-            padding: 2rem;
-            color: var(--primary-blue);
-            font-style: italic;
-        }
-
-        /* --- RIGHT PANEL --- */
-        .right-panel {
-            width: 300px;
-            background: var(--card-bg);
-            padding: 2rem;
-            box-shadow: -2px 0 20px rgba(0,0,0,0.02);
-            z-index: 10;
-        }
-
-        .profile {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 3rem;
-        }
-
-        .avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--primary-blue);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            border: 2px solid var(--accent-bronze);
-        }
-
-        .widget {
-            background: var(--bg-color);
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05), inset -2px -2px 5px white;
-            margin-bottom: 2rem;
-        }
-
-        .widget h4 { margin-bottom: 15px; color: var(--primary-blue); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>House of Ravenclaw - Library</title>
+<meta name="theme-color" content="#080f24">
+<link rel="icon" href="https://lh3.googleusercontent.com/d/1eQXRQppRAoOD6T9FLiRMVJSaHZSZ1E-a=s64">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Azeret+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--bg-main:#112250;--bg-panel:#3C507D;--text-gold:#E0C68F;--text-gold-light:#F5F0E9;--text-light:rgba(245,240,233,.75);--bg-card-light:#d8cdb9;--status-normal:#2ed573;--status-replace-class:#70a1ff;--status-assignment:#ffa502;--status-canceled:#ff4757;--border-gold:rgba(224,198,143,.3);--night:#080f24;--ink:#2b2112}
+*{margin:0;padding:0;box-sizing:border-box}
+html{overflow-x:clip}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:radial-gradient(circle at 50% 0,#152554 0,#080f24 62%,#03050c 100%) fixed;color:var(--text-gold-light);min-height:100vh;line-height:1.6;overflow-x:hidden}
+h1,h2,h3,h4{font-family:Cinzel,serif;color:var(--text-gold);line-height:1.15}
+:focus-visible{outline:2px solid var(--text-gold);outline-offset:3px}
+.orb{position:fixed;border-radius:50%;filter:blur(70px);opacity:.35;pointer-events:none;mix-blend-mode:screen;z-index:0}
+.orb.a{width:380px;height:380px;background:#2540a8;top:-90px;left:-90px}
+.orb.b{width:440px;height:440px;background:#1a1f6b;bottom:-110px;right:-110px}
+.hp-nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:16px;padding:10px 16px;background:linear-gradient(rgba(3,5,12,.9),rgba(3,5,12,.62));backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid rgba(224,198,143,.2)}
+.hp-brand{display:flex;align-items:center;gap:10px;flex-shrink:0;font:700 14px Cinzel,serif;letter-spacing:.2em;color:var(--text-gold)}
+.hp-brand img{width:34px;height:34px;object-fit:contain}
+.hp-brand span{display:none}
+.nav-menu{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0}
+.nav-menu::-webkit-scrollbar{display:none}
+.nav-item{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:8px 12px;border:0;border-radius:8px;background:none;cursor:pointer;white-space:nowrap;font:500 11px 'Azeret Mono',monospace;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,240,233,.8);transition:all .3s}
+.nav-item:hover{color:var(--text-gold);background:rgba(224,198,143,.1)}
+.nav-item.active{color:var(--bg-main);background:var(--text-gold)}
+@media(min-width:900px){.hp-brand span{display:inline}}
+.main-content{position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:2.5rem 1.25rem 5rem}
+.section{display:none}
+.section.active{display:block;animation:fadeIn .45s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.page-header{text-align:center;margin-bottom:2rem}
+.page-header h2{display:flex;align-items:center;justify-content:center;gap:16px;font-size:clamp(1.6rem,4.5vw,2.8rem);text-transform:uppercase;letter-spacing:.06em;color:#fff}
+.page-header h2::before,.page-header h2::after{content:'';flex:1;max-width:220px;height:1px;background:linear-gradient(90deg,transparent,rgba(224,198,143,.6))}
+.page-header h2::after{transform:scaleX(-1)}
+.page-sub{margin-top:.6rem;font-style:italic;color:rgba(245,240,233,.75)}
+.summary-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:1.4rem}
+.glowing-btn,.btn-summary{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 18px;border-radius:999px;font:700 12px 'Plus Jakarta Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:all .3s}
+.glowing-btn{width:100%;margin-top:10px;background:var(--text-gold);color:var(--bg-main)!important;border:1px solid var(--text-gold)}
+.btn-summary{background:transparent;border:1px solid var(--text-gold);color:var(--text-gold)}
+.btn-summary:hover{background:var(--text-gold);color:var(--bg-main)}
+.glowing-btn:hover,.btn-summary:hover{box-shadow:0 0 24px rgba(224,198,143,.55);transform:translateY(-2px)}
+.glowing-btn:disabled{opacity:.6;cursor:wait}
+.filter-bar,.class-card,.content-box,.table-responsive{background:rgba(17,34,80,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.12);box-shadow:0 12px 30px rgba(0,0,0,.35),inset 0 1px 2px rgba(255,255,255,.18);border-radius:10px 10px 30px 10px}
+.filter-bar{display:flex;gap:14px;flex-wrap:wrap;padding:16px;margin-bottom:2rem}
+.filter-group{display:flex;flex-direction:column;gap:6px;flex:1;min-width:140px}
+.filter-label{font:500 10px 'Azeret Mono',monospace;letter-spacing:.22em;text-transform:uppercase;color:var(--text-gold)}
+.filter-select{width:100%;padding:10px 38px 10px 14px;border-radius:8px;border:1px solid var(--border-gold);background:rgba(8,15,36,.8) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%23E0C68F' stroke-width='2'%3E%3Cpath d='M1 1l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 14px center;color:var(--text-gold-light);font:500 .9rem 'Plus Jakarta Sans',sans-serif;appearance:none;-webkit-appearance:none;cursor:pointer;transition:border-color .3s}
+.filter-select:hover{border-color:var(--text-gold)}
+.filter-select option{background:#0d1a45}
+.shelf-group{margin-bottom:3.2rem}
+.shelf-day-title{display:flex;align-items:center;gap:12px;padding:0 .5rem;margin-bottom:.4rem;font:700 1.15rem Cinzel,serif;letter-spacing:.18em;text-transform:uppercase;color:var(--text-gold)}
+.shelf-row{display:flex;flex-wrap:wrap;gap:22px;align-items:flex-end;justify-content:center;min-height:290px;padding:18px 14px 0;background:radial-gradient(ellipse at 50% 100%,rgba(224,198,143,.16),transparent 65%)}
+.wood-shelf{height:22px;background:linear-gradient(#7a5426,#3b2a14);border-top:2px solid #b8924f;border-bottom:4px solid #1a1108;border-radius:3px;box-shadow:0 18px 26px rgba(0,0,0,.7),0 -2px 18px rgba(224,198,143,.12)}
+.book-3d{position:relative;width:clamp(150px,44vw,200px);height:264px;padding:20px 14px 64px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden;border-radius:4px 12px 12px 4px;border-left:12px solid rgba(0,0,0,.35);filter:saturate(.8) brightness(.9);box-shadow:inset 3px 0 8px rgba(0,0,0,.45),6px 8px 14px rgba(0,0,0,.6);transition:transform .35s cubic-bezier(.2,.8,.3,1),filter .35s,box-shadow .35s}
+.book-3d::before{content:'';position:absolute;inset:9px 9px 9px 5px;border:1px solid rgba(224,198,143,.65);border-radius:2px 8px 8px 2px;pointer-events:none}
+.book-3d::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.18),transparent 12%,transparent 88%,rgba(0,0,0,.25));pointer-events:none}
+.book-3d:hover{transform:translateY(-14px) rotate(-1.2deg);filter:none;box-shadow:inset 3px 0 8px rgba(0,0,0,.45),12px 22px 28px rgba(0,0,0,.7),0 0 26px rgba(224,198,143,.35);z-index:5}
+.book-icon{margin-bottom:14px;font-size:2.4rem;color:var(--text-gold);filter:drop-shadow(0 3px 5px rgba(0,0,0,.6))}
+.book-title{font:700 1.02rem Cinzel,serif;letter-spacing:.06em;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,.8)}
+.book-major{margin-top:6px;font:500 .62rem 'Azeret Mono',monospace;letter-spacing:.22em;text-transform:uppercase;color:var(--text-gold)}
+.book-action{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);width:80%;z-index:2}
+.book-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;border-radius:999px;border:1px solid var(--text-gold);background:rgba(3,5,12,.7);color:var(--text-gold);font:600 .72rem 'Plus Jakarta Sans',sans-serif;text-decoration:none;transition:.3s}
+.book-btn:hover{background:var(--text-gold);color:var(--bg-main)}
+.glowing-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem}
+.class-card{display:flex;flex-direction:column;justify-content:space-between;padding:24px;transition:transform .35s,box-shadow .35s}
+.class-card:hover{transform:translateY(-5px);box-shadow:0 0 28px rgba(224,198,143,.3)}
+.status-badge{display:inline-flex;align-items:center;gap:6px;font:600 .72rem 'Azeret Mono',monospace;letter-spacing:.04em}
+.major-badge{padding:4px 10px;border-radius:8px;background:var(--text-gold);color:var(--bg-main);font:600 .66rem 'Azeret Mono',monospace;letter-spacing:.12em;text-transform:uppercase}
+.task-content{list-style:none;margin:10px 0 18px;font-size:.9rem}
+.task-content li{position:relative;padding-left:20px}
+.task-content li::before{content:'✦';position:absolute;left:0;color:var(--text-gold)}
+.report-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem}
+.report-card{padding:28px 20px;text-align:center;color:var(--ink);background:linear-gradient(160deg,#f1e4c3,#d9c391);border:1px solid #8a6a2c;border-radius:10px 10px 30px 10px;box-shadow:0 14px 30px rgba(0,0,0,.45),inset 0 0 0 5px rgba(138,106,44,.14);transition:transform .3s}
+.report-card:hover{transform:translateY(-5px)}
+.table-responsive{overflow-x:auto;margin:1.5rem 0;-webkit-overflow-scrolling:touch}
+.dir-table{width:100%;min-width:680px;border-collapse:collapse;text-align:left}
+.dir-table th{padding:16px 18px;background:rgba(3,5,12,.55);border-bottom:1px solid var(--border-gold);white-space:nowrap;font:500 .7rem 'Azeret Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--text-gold)}
+.dir-table td{padding:14px 18px;border-bottom:1px solid rgba(224,198,143,.1);font-size:.9rem}
+.dir-table tbody tr:hover{background:rgba(224,198,143,.06)}
+.content-box{max-width:860px;margin:0 auto;padding:2rem;font-size:.95rem;line-height:1.8}
+.content-box h3{display:flex;align-items:center;gap:10px;margin:2.2rem 0 1rem;padding-bottom:.6rem;border-bottom:1px solid var(--border-gold);font-size:1.4rem}
+.content-box h3:first-child{margin-top:0}
+.content-box h3::before{content:'✦';font-size:.9rem}
+.content-box p{margin:.9rem 0}
+.content-box ul,.content-box ol{margin:0 0 1.2rem;padding-left:1.4rem}
+.content-box li{margin-bottom:.5rem}
+.content-box hr{border:0;border-top:1px dashed var(--border-gold);margin:2rem 0;opacity:.6}
+.content-box .table-responsive{margin:1.2rem 0}
+.modal-overlay{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:16px;overflow:auto;background:rgba(3,5,12,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.modal-card{position:relative;width:100%;max-width:400px;padding:30px 26px;text-align:center;color:var(--ink);background:linear-gradient(160deg,#f1e4c3,#d9c391);border:2px solid var(--text-gold);border-radius:10px 10px 30px 10px;box-shadow:0 24px 60px rgba(0,0,0,.7),inset 0 0 0 5px rgba(138,106,44,.18);animation:fadeIn .35s ease}
+.modal-card h3{margin-bottom:12px;font-size:1.5rem;letter-spacing:.06em;color:var(--bg-main)}
+.modal-lock{margin-bottom:10px;font-size:2rem;color:var(--bg-main)}
+.modal-note{margin-bottom:18px;font-size:.85rem;color:#5a4420}
+.modal-input{width:100%;margin-bottom:12px;padding:11px 12px;border-radius:8px;border:1px solid #8a6a2c;background:rgba(255,255,255,.58);color:var(--ink);text-align:center;font:500 16px 'Plus Jakarta Sans',sans-serif}
+.modal-input:focus{outline:2px solid #1c3077;outline-offset:1px}
+.modal-card .glowing-btn{background:var(--bg-main);border-color:var(--bg-main);color:var(--text-gold)!important}
+.modal-ok{margin-bottom:8px;font-weight:700;color:#1b7a43}
+.token-box{margin-bottom:12px;padding:12px;border:1px dashed #8a6a2c;border-radius:8px;background:rgba(120,80,20,.12);font:600 1.1rem 'Azeret Mono',monospace;letter-spacing:.08em;word-break:break-all;user-select:all;color:var(--bg-main)}
+.btn-close-modal{position:absolute;top:10px;right:12px;padding:6px;border:0;background:none;font-size:1.2rem;color:var(--ink);cursor:pointer}
+.loading-screen{position:fixed;inset:0;z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center;background:var(--night)}
+.loading-screen img{width:84px;animation:glow 2.4s ease-in-out infinite alternate}
+.loading-screen p{font-size:1.05rem;font-style:italic;color:var(--text-gold)}
+@keyframes glow{from{filter:drop-shadow(0 0 6px rgba(224,198,143,.25))}to{filter:drop-shadow(0 0 22px rgba(224,198,143,.8))}}
+@media(max-width:768px){.main-content{padding:1.5rem 1rem 4rem}.content-box{padding:1.25rem}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
+<div class="orb a"></div><div class="orb b"></div>
 
-    <!-- SIDEBAR -->
-    <nav class="sidebar">
-        <div class="logo">
-            <i class="fa-solid fa-graduation-cap"></i>
-            <span>Akademik</span>
-        </div>
-        
-        <div class="nav-item active" onclick="switchTab('library', this)">
-            <i class="fa-solid fa-book-open"></i> Library
-        </div>
-        <div class="nav-item" onclick="switchTab('aktivitas', this)">
-            <i class="fa-solid fa-users-rectangle"></i> Aktivitas Kelas
-        </div>
-        <div class="nav-item" onclick="switchTab('rapor', this)">
-            <i class="fa-solid fa-chart-line"></i> Rapor
-        </div>
-        <div class="nav-item" onclick="switchTab('panduankelas', this)">
-            <i class="fa-solid fa-chalkboard-user"></i> Panduan Kelas
-        </div>
-        <div class="nav-item" onclick="switchTab('panduanujian', this)">
-            <i class="fa-solid fa-file-pen"></i> Panduan Ujian
-        </div>
-    </nav>
+<div id="loader" class="loading-screen">
+<img src="https://lh3.googleusercontent.com/d/1itBW7VYne3TZcKNmiia7X2HxGn-LSD33=w256" alt="Ravenclaw crest">
+<p>Consulting the Archives...</p>
+</div>
 
-    <!-- MAIN CONTENT -->
-    <main class="main-content">
-        <div class="header">
-            <div class="search-bar">
-                <i class="fa-solid fa-magnifying-glass" style="color: var(--text-light)"></i>
-                <input type="text" placeholder="Cari buku, kelas, atau panduan...">
-            </div>
-            <h2>Selamat Datang, Student</h2>
-        </div>
+<div id="passcode-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+<div class="modal-card">
+<button type="button" class="btn-close-modal" onclick="closeModal()" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+<i class="fa-solid fa-lock modal-lock"></i>
+<h3 id="modal-title">MAJOR</h3>
 
-        <!-- 1. LIBRARY -->
-        <section id="library" class="section active">
-            <h3>Library Akademik</h3>
-            <p style="color: var(--text-light); margin-top: 5px;">Koleksi buku dan referensi terbaru.</p>
-            <div class="card-grid">
-                <!-- Mock 3D Book Cards -->
-                <div class="book-card">
-                    <div class="book-cover">Mantra & Sihir Dasar</div>
-                    <h4 style="margin-top: 10px;">Mantra & Sihir</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-light);">Miranda Goshawk</p>
-                </div>
-                <div class="book-card">
-                    <div class="book-cover" style="background: linear-gradient(135deg, #946B2D, #5c4118);">Sejarah Sihir</div>
-                    <h4 style="margin-top: 10px;">Sejarah Sihir</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-light);">Bathilda Bagshot</p>
-                </div>
-                <div class="book-card">
-                    <div class="book-cover" style="background: linear-gradient(135deg, #1a1a1a, #4a4a4a);">Pertahanan Gelap</div>
-                    <h4 style="margin-top: 10px;">Ilmu Hitam</h4>
-                    <p style="font-size: 0.8rem; color: var(--text-light);">Quentin Trimble</p>
-                </div>
-            </div>
-        </section>
+<div id="vault-view-1">
+<p class="modal-note">Enter your username and 4-digit Vault Code to generate an authorization token.</p>
+<input type="text" id="student-name" class="modal-input" placeholder="Your Username" autocomplete="off">
+<input type="text" id="vault-code-input" class="modal-input" placeholder="4-Digit Vault Code" autocomplete="off" maxlength="4">
+<button type="button" id="request-btn" class="glowing-btn" onclick="requestPasscode()"><i class="fa-solid fa-key"></i> Generate Passcode</button>
+</div>
 
-        <!-- 2. AKTIVITAS KELAS -->
-        <section id="aktivitas" class="section">
-            <h3>Aktivitas Kelas</h3>
-            <div class="card-grid">
-                <div class="book-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px;">
-                    <i class="fa-solid fa-flask" style="font-size: 3rem; color: var(--primary-blue); margin-bottom: 15px;"></i>
-                    <h4>Kelas Ramuan</h4>
-                    <p style="font-size: 0.8rem;">Prof. Slughorn - 10:00 AM</p>
-                </div>
-                <div class="book-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px;">
-                    <i class="fa-solid fa-star" style="font-size: 3rem; color: var(--accent-bronze); margin-bottom: 15px;"></i>
-                    <h4>Astronomi</h4>
-                    <p style="font-size: 0.8rem;">Prof. Sinistra - 08:00 PM</p>
-                </div>
-            </div>
-        </section>
+<div id="vault-view-2" style="display:none;">
+<p class="modal-ok"><i class="fa-solid fa-circle-check"></i> Access Granted</p>
+<p class="modal-note" style="margin-bottom:10px;">Your secured passcode:</p>
+<div class="token-box" id="generated-passcode"></div>
+<p class="modal-note">Copy the passcode above and paste it below to unlock.</p>
+<input type="text" id="passcode-input" class="modal-input" placeholder="Paste Token Here..." autocomplete="off">
+<button type="button" id="unlock-btn" class="glowing-btn" onclick="verifyPasscode()"><i class="fa-solid fa-unlock-keyhole"></i> Unlock Scroll</button>
+</div>
+</div>
+</div>
 
-        <!-- 3. RAPOR (Data dari Google Sheets) -->
-        <section id="rapor" class="section">
-            <h3>Rapor Siswa</h3>
-            <div class="data-table-container">
-                <div id="rapor-loading" class="loading">Mengambil data rapor dari Google Sheets... <i class="fa-solid fa-circle-notch fa-spin"></i></div>
-                <table id="rapor-table" style="display: none;">
-                    <thead id="rapor-head"></thead>
-                    <tbody id="rapor-body"></tbody>
-                </table>
-            </div>
-        </section>
+<header class="hp-nav">
+<div class="hp-brand"><img src="https://lh3.googleusercontent.com/d/1eQXRQppRAoOD6T9FLiRMVJSaHZSZ1E-a=w80" alt=""><span>HOUSE OF RAVENCLAW</span></div>
+<nav class="nav-menu" aria-label="Library sections">
+<button type="button" class="nav-item active" onclick="switchTab('library')"><i class="fa-solid fa-book-open"></i> <span class="nav-txt">Library</span></button>
+<button type="button" class="nav-item" onclick="switchTab('classes')"><i class="fa-solid fa-scroll"></i> <span class="nav-txt">Class Information</span></button>
+<button type="button" class="nav-item" onclick="switchTab('report')"><i class="fa-solid fa-shield-halved"></i> <span class="nav-txt">Academic Reports</span></button>
+<button type="button" class="nav-item" onclick="switchTab('classguide')"><i class="fa-solid fa-landmark"></i> <span class="nav-txt">Class Directory</span></button>
+<button type="button" class="nav-item" onclick="switchTab('owlguide')"><i class="fa-solid fa-file-signature"></i> <span class="nav-txt">O.W.L Guide</span></button>
+</nav>
+</header>
 
-        <!-- 4. PANDUAN KELAS (Data dari Google Sheets) -->
-        <section id="panduankelas" class="section">
-            <h3>Panduan Kelas</h3>
-            <div class="data-table-container">
-                <div id="panduan-loading" class="loading">Mengambil data panduan dari Google Sheets... <i class="fa-solid fa-circle-notch fa-spin"></i></div>
-                <table id="panduan-table" style="display: none;">
-                    <thead id="panduan-head"></thead>
-                    <tbody id="panduan-body"></tbody>
-                </table>
-            </div>
-        </section>
+<main class="main-content">
+<!-- 1. LIBRARY -->
+<section id="library" class="section active">
+<div class="page-header">
+<h2>ACADEMIC LIBRARY</h2>
+<p class="page-sub">Class scrolls, shelved by day.</p>
+<div class="summary-actions">
+<button class="btn-summary" onclick="openModal('Auror')"><i class="fa-solid fa-shield"></i> Final Summary : Auror</button>
+<button class="btn-summary" onclick="openModal('Ministry')"><i class="fa-solid fa-scale-balanced"></i> Final Summary : Ministry</button>
+</div>
+</div>
+<div class="filter-bar">
+<div class="filter-group"><span class="filter-label">Month</span><select id="lib-month" class="filter-select" onchange="filterLibrary()"></select></div>
+<div class="filter-group"><span class="filter-label">Week</span><select id="lib-week" class="filter-select" onchange="filterLibrary()"></select></div>
+<div class="filter-group"><span class="filter-label">Level</span>
+<select id="lib-level" class="filter-select" onchange="filterLibrary()">
+<option value="All">All Levels</option><option value="Beginner">Beginner</option><option value="Advanced">Advanced</option><option value="Extracurricular">Extracurricular</option>
+</select>
+</div>
+<div class="filter-group"><span class="filter-label">Major</span>
+<select id="lib-major" class="filter-select" onchange="filterLibrary()">
+<option value="All">All Majors</option><option value="Auror">Auror</option><option value="Ministry">Ministry</option>
+</select>
+</div>
+</div>
+<div id="library-content" class="shelf-container"></div>
+</section>
 
-        <!-- 5. PANDUAN UJIAN -->
-        <section id="panduanujian" class="section">
-            <h3>Panduan Ujian Akhir</h3>
-            <div class="data-table-container">
-                <p>Jadwal dan tata tertib ujian akan diupdate segera menjelang pekan O.W.L.s.</p>
-            </div>
-        </section>
-    </main>
+<section id="classes" class="section">
+<div class="page-header">
+<h2>CLASS INFORMATION</h2>
+<p class="page-sub">Schedules, assignments and replacement classes.</p>
+</div>
+<div class="filter-bar">
+<div class="filter-group"><span class="filter-label">Month</span><select id="cls-month" class="filter-select" onchange="filterClasses()"></select></div>
+<div class="filter-group"><span class="filter-label">Week</span><select id="cls-week" class="filter-select" onchange="filterClasses()"></select></div>
+<div class="filter-group"><span class="filter-label">Level</span>
+<select id="cls-level" class="filter-select" onchange="filterClasses()">
+<option value="All">All Levels</option><option value="Beginner">Beginner</option><option value="Advanced">Advanced</option><option value="Extracurricular">Extracurricular</option>
+</select>
+</div>
+<div class="filter-group"><span class="filter-label">Major</span>
+<select id="cls-major" class="filter-select" onchange="filterClasses()">
+<option value="All">All Majors</option><option value="Auror">Auror</option><option value="Ministry">Ministry</option>
+</select>
+</div>
+</div>
+<div id="classes-content" class="glowing-grid"></div>
+</section>
 
-    <!-- RIGHT PANEL -->
-    <aside class="right-panel">
-        <div class="profile">
-            <div class="avatar"><i class="fa-solid fa-user"></i></div>
-            <div>
-                <h4 style="margin:0;">Felix Rosier</h4>
-                <p style="font-size: 0.8rem; color: var(--text-light);">Tahun Ke-4</p>
-            </div>
-        </div>
+<section id="report" class="section">
+<div class="page-header">
+<h2>ACADEMIC REPORTS</h2>
+<p class="page-sub">Your monthly academic scrolls.</p>
+</div>
+<div class="filter-bar">
+<div class="filter-group"><span class="filter-label">Major</span><select id="rep-major" class="filter-select" onchange="filterReport()"></select></div>
+<div class="filter-group"><span class="filter-label">Month</span><select id="rep-month" class="filter-select" onchange="filterReport()"></select></div>
+<div class="filter-group"><span class="filter-label">Year</span><select id="rep-year" class="filter-select" onchange="filterReport()"></select></div>
+</div>
+<div id="report-content" class="report-grid"></div>
+</section>
 
-        <div class="widget">
-            <h4><i class="fa-regular fa-calendar-check"></i> Jadwal Terdekat</h4>
-            <p style="font-size: 0.85rem; margin-bottom: 10px;"><strong>Hari ini, 14:00</strong><br>Pengumpulan Esai Transfigurasi</p>
-            <p style="font-size: 0.85rem;"><strong>Besok, 09:00</strong><br>Praktik Herbologi</p>
-        </div>
-    </aside>
+<section id="classguide" class="section">
+<div class="page-header">
+<h2>CLASS DIRECTORY</h2>
+<p class="page-sub">Professors, classrooms, rules and deadlines.</p>
+</div>
+<div class="filter-bar">
+<div class="filter-group"><span class="filter-label">Level</span><select id="gui-level" class="filter-select" onchange="filterClassGuide()"></select></div>
+<div class="filter-group"><span class="filter-label">Subject</span><select id="gui-sub" class="filter-select" onchange="filterClassGuide()"></select></div>
+</div>
+<div class="table-responsive">
+<table class="dir-table">
+<thead><tr><th>Level</th><th>Subject</th><th>Professor</th><th style="text-align:center;">Class Room</th><th style="text-align:center;">Rules / Links</th><th>Late Tolerance</th><th>Final Deadline</th></tr></thead>
+<tbody id="classguide-content"></tbody>
+</table>
+</div>
+</section>
 
-    <script>
-        // Tab Navigation Logic
-        function switchTab(tabId, element) {
-            // Remove active class from all tabs
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-            
-            // Add active class to clicked tab
-            element.classList.add('active');
-            // Show corresponding section
-            document.getElementById(tabId).classList.add('active');
-        }
+<section id="owlguide" class="section">
+<div class="page-header">
+<h2>O.W.L. Guide</h2>
+<p class="page-sub">Panduan Ordinary Wizarding Level: peraturan, syarat, dan ketentuan ujian.</p>
+</div>
 
-        // Google Sheets Integration Logic
-        const SHEET_ID = '1LmKSA0B28wsxOBrMd7ddsavBLU7tK4CxtZajY5R_X_Q';
-        
-        async function fetchSheetData(sheetName, tableId, loadingId) {
-            // URL format to get CSV from public Google Sheet
-            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
-            
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error("Gagal mengambil data");
-                const text = await response.text();
-                
-                // Parse CSV text (Basic implementation)
-                const rows = text.split('\n').map(row => {
-                    // Handle commas inside quotes in CSV
-                    const regex = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
-                    const matches = row.match(regex) || [];
-                    return matches.map(m => m.replace(/^"|"$/g, ''));
-                });
+<div class="content-box">
+<h3>Tentang</h3>
+<p><em>Ordinary Wizarding Level</em> adalah ujian kenaikan kelas yang ada di Hogwarts. <em>Ordinary Wizarding Level</em> biasanya dilakukan setiap satu bulan sekali, tepatnya pada akhir atau awal bulan baru. Ujian ini perlu diikuti oleh seluruh murid yang berada di bangku kelas 1 sampai dengan bangku kelas 6.</p>
+<p>Apabila murid tidak mengikuti <em>Ordinary Wizarding Level</em>, maka murid yang bersangkutan tidak dapat naik ke kelas yang lebih tinggi. Oleh karena itu, pastikan kamu telah memahami seluruh ketentuan dan mempersiapkan kebutuhan yang diperlukan sebelum mengikuti ujian.</p>
+<p>Bentuk soal yang terdapat dalam <em>Ordinary Wizarding Level</em> terdiri dari:</p>
+<ul>
+<li>Soal pilihan ganda yang dikerjakan sesuai dengan ketentuan kelas masing-masing.</li>
+<li>Soal <em>essay</em> bagi murid yang mengambil peminatan.</li>
+</ul>
 
-                if(rows.length > 0 && rows[0].length > 0) {
-                    renderTable(rows, tableId, loadingId);
-                } else {
-                    document.getElementById(loadingId).innerText = "Data tidak ditemukan atau Sheet kosong.";
-                }
-            } catch (error) {
-                console.error(error);
-                document.getElementById(loadingId).innerText = "Gagal memuat data. Pastikan Google Sheet sudah diset 'Anyone with the link can view'.";
-            }
-        }
+<hr>
 
-        function renderTable(data, tablePrefix, loadingId) {
-            const head = document.getElementById(`${tablePrefix}-head`);
-            const body = document.getElementById(`${tablePrefix}-body`);
-            const table = document.getElementById(`${tablePrefix}-table`);
-            const loading = document.getElementById(loadingId);
+<h3>Peralatan Pendukung</h3>
+<p>Sebelum kamu benar-benar mengikuti <em>Ordinary Wizarding Level</em>, mohon perhatikan dan siapkan beberapa kebutuhan pendukung berikut:</p>
+<ul>
+<li><em>Student Points</em>;</li>
+<li>Tanda pengenal atau <em>Student ID Card</em>;</li>
+<li>Perangkat yang digunakan untuk mengerjakan ujian;</li>
+<li>Sinyal yang stabil;</li>
+<li>Kuota internet yang mencukupi;</li>
+<li>Baterai perangkat yang mencukupi;</li>
+<li>Fisik dan mental;</li>
+<li>Niat;</li>
+<li>Fokus;</li>
+<li>Dan kebutuhan pendukung lainnya.</li>
+</ul>
+<p>Pastikan seluruh kebutuhan tersebut telah disiapkan sebelum sesi ujian dimulai. Kendala yang disebabkan oleh kelalaian peserta, seperti kehabisan baterai atau tidak sengaja menutup lembar ujian, menjadi tanggung jawab peserta.</p>
 
-            head.innerHTML = '';
-            body.innerHTML = '';
+<hr>
 
-            // Render Header (Baris Pertama CSV)
-            let headerRow = document.createElement('tr');
-            data[0].forEach(col => {
-                let th = document.createElement('th');
-                th.innerText = col.replace(/"/g, ''); // Hapus kutip jika ada
-                headerRow.appendChild(th);
-            });
-            head.appendChild(headerRow);
+<h3>Waktu Pelaksanaan</h3>
+<p><em>Ordinary Wizarding Level</em> akan diadakan dalam <strong>4 sesi</strong>. Kamu dibebaskan untuk memilih sesi mana pun, asal hanya mengikuti ujian <strong>satu kali</strong>.</p>
+<p>Berikut adalah jadwal waktu 4 sesi <em>Ordinary Wizarding Level</em> yang dimaksud:</p>
+<ol>
+<li><strong>Sesi 1</strong> diadakan pukul 11:55 GMT +7.</li>
+<li><strong>Sesi 2</strong> diadakan pukul 18:55 GMT +7.</li>
+<li><strong>Sesi 3</strong> diadakan pukul 11:55 GMT +7.</li>
+<li><strong>Sesi 4</strong> diadakan pukul 18:55 GMT +7.</li>
+</ol>
+<p>Setiap sesi memiliki waktu persiapan selama <strong>15 menit</strong> sebelum soal ujian diberikan. Waktu tersebut digunakan untuk melakukan pengumpulan <em>Student ID Card</em>, pemeriksaan peserta, masuk ke ruang ujian, serta pemberian arahan dan instruksi dari panitia.</p>
+<p>Pada sekitar menit ke-10 atau ke-11, panitia akan mulai memberikan arahan dan instruksi. Kemudian, soal beserta kata sandi akan di-<em>drop</em> pada <strong>menit ke-15</strong>.</p>
+<p>Setelah soal di-<em>drop</em>, peserta diberikan <strong>waktu toleransi selama 5 menit untuk membuka soal</strong>. Waktu toleransi tersebut dapat digunakan untuk membuka tautan, mengisi identitas, memasukkan kata sandi, dan mempersiapkan lembar ujian.</p>
+<p><strong>Waktu toleransi 5 menit bukan merupakan tambahan waktu pengerjaan. Waktu pengerjaan baru mulai dihitung setelah kamu menekan tombol <em>Start</em>.</strong></p>
 
-            // Render Body (Baris Kedua dan seterusnya)
-            for (let i = 1; i < data.length; i++) {
-                if(data[i].length === 0 || data[i][0] === "") continue; // Skip baris kosong
-                
-                let tr = document.createElement('tr');
-                data[i].forEach(col => {
-                    let td = document.createElement('td');
-                    td.innerText = col.replace(/"/g, '');
-                    tr.appendChild(td);
-                });
-                body.appendChild(tr);
-            }
+<hr>
 
-            loading.style.display = 'none';
-            table.style.display = 'table';
-        }
+<h3>Pembayaran</h3>
+<p><em>Ordinary Wizarding Level</em> tidak diadakan secara cuma-cuma. Kamu perlu membayar <em>Student Points</em> yang kamu miliki kepada pihak bank sekolah sesuai dengan ketentuan berikut apabila ingin mengikuti <em>Ordinary Wizarding Level</em>:</p>
+<ul>
+<li>Kelas 1: 120 <em>Student Points</em>.</li>
+<li>Kelas 2: 180 <em>Student Points</em>.</li>
+<li>Kelas 3: 220 <em>Student Points</em>.</li>
+<li>Kelas 4: 280 <em>Student Points</em>.</li>
+<li>Kelas 5: 330 <em>Student Points</em>.</li>
+<li>Kelas 6: 400 <em>Student Points</em>.</li>
+<li>Setiap peminatan: 50 <em>Student Points</em>.</li>
+</ul>
+<p>Pembayaran <em>Student Points</em> dapat dilakukan kepada pihak asrama masing-masing karena pihak asrama yang akan menyetorkan keseluruhan <em>Student Points</em> murid asramanya kepada pihak bank sekolah.</p>
+<p><strong>Khusus murid Ravenclaw</strong>, pembayaran <em>Student Points</em> dilakukan dengan ketentuan sebagai berikut:</p>
+<ol>
+<li>Pembayaran dibuka pada <strong>hari Rabu di pekan tenang</strong>.</li>
+<li>Isi formulir <strong>bit.ly/PD-RV</strong> pada bagian <strong>Student Point Report</strong>.</li>
+<li><em>Drop</em> bukti pengisian pada wadah yang telah disediakan.</li>
+<li>Pengisian dan pengumpulan bukti dilakukan paling lambat <strong>hari Sabtu pukul 23.59 pada pekan tenang</strong>.</li>
+</ol>
+<p>Pastikan pembayaran dilakukan sesuai dengan waktu yang telah ditentukan agar data pembayaran dapat dicatat dan disetorkan oleh pihak asrama.</p>
 
-        // Initialize fetching on page load
-        window.onload = () => {
-            // Fetch data for "rapor" sheet
-            fetchSheetData('rapor', 'rapor', 'rapor-loading');
-            
-            // Fetch data for "panduan kelas" sheet
-            // URL encode spasi menjadi %20
-            fetchSheetData('panduan%20kelas', 'panduan', 'panduan-loading');
-        };
-    </script>
+<hr>
+
+<h3>Lokasi & Alur Pelaksanaan</h3>
+<p>Tahapan untuk mengikuti <em>Ordinary Wizarding Level</em> adalah sebagai berikut:</p>
+<p><strong>1. <em>Follow</em> akun ujian</strong><br>
+Silakan <em>follow</em> akun X <strong>@AH_Ujian</strong> untuk memperoleh informasi mengenai pelaksanaan dan sesi <em>Ordinary Wizarding Level</em>.</p>
+<p><strong>2. Hadir pada sesi yang dipilih</strong><br>
+Pastikan kamu telah siap sebelum sesi yang dipilih dimulai. Kamu hanya diperbolehkan mengikuti satu sesi.</p>
+<p><strong>3. <em>Drop Student ID Card</em></strong><br>
+Setelah sesi dimulai, panitia akan memberikan arahan mengenai pengumpulan <em>Student ID Card</em>. Segera lakukan <em>drop</em> tanda pengenal sesuai dengan instruksi yang diberikan.<br>
+Waktu pengumpulan tanda pengenal adalah <strong>15 menit sejak sesi dimulai</strong>. Apabila terlambat mengumpulkan tanda pengenal, kamu tidak dapat masuk ke dalam ruang ujian.</p>
+<p><strong>4. Tunggu undangan ke ruang ujian</strong><br>
+Setelah melakukan <em>drop Student ID Card</em>, tunggu hingga panitia memeriksa data dan mengundang kamu ke dalam ruang ujian melalui <em>group direct message</em>.</p>
+<p><strong>5. Perhatikan arahan panitia</strong><br>
+Setelah berada di ruang ujian, perhatikan seluruh arahan dan instruksi yang diberikan oleh panitia.</p>
+<p><strong>6. Terima soal dan kata sandi</strong><br>
+Pada menit ke-15, panitia akan memberikan tautan soal Google Form beserta kata sandi yang diperlukan untuk mengakses lembar ujian.</p>
+<p><strong>7. Buka soal</strong><br>
+Setelah soal diberikan, kamu memiliki waktu toleransi selama <strong>5 menit</strong> untuk membuka tautan dan mempersiapkan lembar ujian. Gunakan waktu tersebut untuk membuka soal, mengisi identitas, dan memasukkan kata sandi. Serta siapkan penghitung waktu.</p>
+<p><strong>8. Kerjakan soal sesuai ketentuan kelas</strong><br>
+Kerjakan soal yang wajib dikerjakan sesuai dengan tingkat kelas kamu. Kamu tidak perlu mengerjakan soal yang tidak diwajibkan.</p>
+<p><strong>9. Selesaikan dan periksa jawaban</strong><br>
+Pastikan seluruh soal yang wajib telah dikerjakan. Bagi murid yang mengambil peminatan, kerjakan pula soal <em>essay</em> sesuai dengan ketentuan.</p>
+<p><strong>10. Kirim jawaban</strong><br>
+Setelah seluruh jawaban selesai diperiksa, tekan <strong>Submit My Answers</strong>.<br>
+Disarankan untuk tidak menunggu hingga batas waktu berakhir. Usahakan jawaban telah dikirim dengan waktu cadangan untuk mengantisipasi kemungkinan kendala teknis.</p>
+<p><strong>11. Konfirmasi kepada panitia</strong><br>
+Setelah melakukan <em>submit</em>, tanyakan kepada panitia apakah jawaban kamu telah diterima.<br>
+Apabila sudah dikonfirmasi, kamu diperbolehkan meninggalkan ruang ujian (<em>left group</em>).</p>
+
+<hr>
+
+<h3>Jumlah Soal</h3>
+<p>Jumlah soal yang terdapat dalam <em>Ordinary Wizarding Level</em> adalah <strong>33 soal pilihan ganda</strong> dan soal <em>essay</em> sesuai dengan peminatan yang diambil.</p>
+<p>Namun, kamu hanya perlu mengerjakan soal sesuai dengan ketentuan kelas masing-masing.</p>
+
+<div class="table-responsive">
+<table class="dir-table">
+<thead>
+<tr>
+<th>Kelas</th>
+<th>Ketentuan Soal</th>
+<th style="text-align: right;">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Seluruh mata pelajaran nomor 1 dan 2 + soal <em>Quidditch</em> nomor 1, 2, dan 3</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Seluruh mata pelajaran nomor 1, 2, dan 3 + soal <em>Quidditch</em> nomor 1 dan 2</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Seluruh mata pelajaran nomor 1, 2, 3, dan 4 + soal <em>Quidditch</em> nomor 1</td>
+<td style="text-align: right;">25</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Seluruh mata pelajaran nomor 1, 2, 3, 4, dan 5</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Seluruh mata pelajaran nomor 1, 2, 3, 4, dan 5 + 1 soal <em>essay</em></td>
+<td style="text-align: right;">31</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Seluruh mata pelajaran nomor 1, 2, 3, 4, dan 5 + 2 soal <em>essay</em></td>
+<td style="text-align: right;">32</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<p>Apabila mengambil peminatan, jumlah soal <em>essay</em> yang perlu dikerjakan menyesuaikan dengan jumlah peminatan yang diambil.</p>
+<p><strong>Kerjakan hanya soal yang diwajibkan untuk kelas kamu.</strong></p>
+
+<hr>
+
+<h3>Waktu Pengerjaan</h3>
+<p>Waktu pengerjaan <em>Ordinary Wizarding Level</em> mulai dihitung setelah kamu menekan tombol <strong>Start</strong>.</p>
+<p>Ketentuan durasi pengerjaan berdasarkan kelas adalah:</p>
+
+<div class="table-responsive">
+<table class="dir-table">
+<thead>
+<tr>
+<th>Kelas</th>
+<th style="text-align: right;">Durasi (Menit)</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>1</td><td style="text-align: right;">30</td></tr>
+<tr><td>2</td><td style="text-align: right;">40</td></tr>
+<tr><td>3</td><td style="text-align: right;">50</td></tr>
+<tr><td>4</td><td style="text-align: right;">60</td></tr>
+<tr><td>5</td><td style="text-align: right;">70</td></tr>
+<tr><td>6</td><td style="text-align: right;">85</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Apabila mengambil peminatan, kamu akan mendapatkan waktu pengerjaan tambahan dengan ketentuan:</p>
+
+<div class="table-responsive">
+<table class="dir-table">
+<thead>
+<tr>
+<th>Jumlah Peminatan</th>
+<th style="text-align: right;">Durasi Tambahan (Menit)</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>1</td><td style="text-align: right;">5</td></tr>
+<tr><td>2</td><td style="text-align: right;">10</td></tr>
+<tr><td>3</td><td style="text-align: right;">15</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Sebagai contoh, murid kelas 4 yang mengambil dua peminatan akan memperoleh waktu pengerjaan selama <strong>70 menit</strong>.</p>
+<p><strong>Perlu diperhatikan:</strong> waktu toleransi 5 menit untuk membuka soal tidak termasuk ke dalam durasi pengerjaan di atas. Durasi pengerjaan baru berjalan setelah kamu menekan <strong>Start</strong>.</p>
+
+<hr>
+
+<h3>Ketentuan Tambahan</h3>
+<ul>
+<li>Apabila kamu akan memakai <strong>Velvet Key</strong>, harap melampirkan bukti kepemilikan sertifikat secara bersamaan saat melakukan pengumpulan <em>Student ID Card</em>.</li>
+<li>Murid kelas 5 dan 6 yang mengambil peminatan harap menghubungi panitia bertugas melalui akun ujian untuk meminta <em>essay</em> setelah selesai melaksanakan ujian pilihan ganda.</li>
+<li>Dilarang mengerjakan <em>Ordinary Wizarding Level</em> lebih dari satu kali tanpa mendapatkan izin dari panitia ujian.</li>
+<li>Apabila terjadi <em>error</em> pada soal atau sistem ujian, segera laporkan kepada panitia melalui <em>direct message</em>. <strong>Jangan langsung mengulang ujian.</strong></li>
+<li>Apabila masalah terjadi karena kesalahan atau kelalaian peserta, peserta tidak diperbolehkan mengulang ujian.</li>
+<li>Permasalahan yang berasal dari pihak peserta meliputi:
+<ul>
+<li>Habisnya baterai ponsel atau komputer;</li>
+<li>Tidak sengaja menutup lembar soal;</li>
+<li>Kendala pada perangkat yang digunakan;</li>
+<li>Dan hal lain yang disebabkan oleh kelalaian peserta.</li>
+</ul>
+</li>
+<li>Dilarang mengerjakan <em>Ordinary Wizarding Level</em> milik orang lain.</li>
+<li>Dilarang menyebarkan soal ujian kepada orang lain.</li>
+<li>Dilarang menyebarkan jawaban ujian kepada orang lain.</li>
+<li>Dilarang memberikan bantuan kepada peserta lain dengan cara yang melanggar ketentuan ujian.</li>
+<li>Setiap pelanggaran yang berhubungan dengan ujian kenaikan kelas akan mendapatkan sanksi sesuai dengan bobot pelanggaran.</li>
+</ul>
+<p>Peserta yang mengerjakan <em>Ordinary Wizarding Level</em> lebih dari satu kali tanpa sepengetahuan atau izin panitia dapat dinyatakan <strong>tidak lulus</strong> dan dikenakan penarikan sebesar <strong>50% dari total <em>Student Points</em></strong>.</p>
+
+<hr>
+
+<p style="font-style: italic; opacity: 0.6; font-size: 0.8rem; text-align: left;">Source of Information<br>This guide has been adapted and compiled from the information provided on the official school website.</p>
+
+</div>
+</section>
+</main>
+
+<script>
+let db = {};
+let currentTargetSummary = "";
+let currentSummaryLink = "";
+let currentSummaryMonth = "";
+let expectedToken = "";
+
+const baseSchedule = [
+{ level: 'Beginner', major: 'Auror', subject: 'Charm', prof: 'Prof. Euredian Edenknight', day: 'Monday', time: '19.45-20.45' },
+{ level: 'Advanced', major: 'Auror', subject: 'Charm', prof: 'Prof. Souta Aoki', day: 'Monday', time: '19.45-20.45' },
+{ level: 'Beginner', major: 'Auror', subject: 'Potion', prof: 'Prof. Yasmine Dunford', day: 'Tuesday', time: '18.25-19.25' },
+{ level: 'Advanced', major: 'Auror', subject: 'Potion', prof: 'Prof. Benedictus Gaunt', day: 'Tuesday', time: '18.25-19.25' },
+{ level: 'Beginner', major: 'Auror', subject: 'Arithmancy', prof: 'Prof. Sasleigha Alvéron', day: 'Thursday', time: '18.25-19.25' },
+{ level: 'Advanced', major: 'Auror', subject: 'Arithmancy', prof: 'Prof. Luna Everard', day: 'Thursday', time: '18.25-19.25' },
+{ level: 'Beginner', major: 'Auror', subject: 'Transfiguration', prof: 'Prof. Eufrasia Edenknight', day: 'Friday', time: '18.25-19.25' },
+{ level: 'Advanced', major: 'Auror', subject: 'Transfiguration', prof: 'Ms. Hasie Hastari', day: 'Friday', time: '18.25-19.25' },
+{ level: 'Beginner', major: 'Auror', subject: 'Defence Against the Dark Arts', prof: 'Ms. Lucelia Moonverly', day: 'Saturday', time: '18.25-19.25' },
+{ level: 'Advanced', major: 'Auror', subject: 'Defence Against the Dark Arts', prof: 'Prof. Arghamount Clark', day: 'Saturday', time: '18.25-19.25' },
+{ level: 'Beginner', major: 'Auror', subject: 'Herbology', prof: 'Prof. Madelief Goossens', day: 'Saturday', time: '19.45-20.45' },
+{ level: 'Advanced', major: 'Auror', subject: 'Herbology', prof: 'Chief Christian Grey', day: 'Saturday', time: '19.45-20.45' },
+{ level: 'Beginner', major: 'Ministry', subject: 'Astronomy', prof: 'Prof. Noah Dacre', day: 'Monday', time: '18.25-19.25' },
+{ level: 'Advanced', major: 'Ministry', subject: 'Astronomy', prof: 'Prof. Aodhan Wynndale', day: 'Monday', time: '18.25-19.25' },
+{ level: 'Beginner', major: 'Ministry', subject: 'Divination', prof: 'Prof. Hyacinth Hargreaves', day: 'Tuesday', time: '19.45-20.45' },
+{ level: 'Advanced', major: 'Ministry', subject: 'Divination', prof: 'Prof. Heron Forthwood', day: 'Tuesday', time: '19.45-20.45' },
+{ level: 'Beginner', major: 'Ministry', subject: 'Care of Magical Creatures', prof: 'Mr. Timothy Gallio', day: 'Wednesday', time: '18.25-19.25' },
+{ level: 'Advanced', major: 'Ministry', subject: 'Care of Magical Creatures', prof: 'Prof. Cathalina Adler', day: 'Wednesday', time: '18.25-19.25' },
+{ level: 'Beginner', major: 'Ministry', subject: 'Ancient Rune', prof: 'Prof. Takahashi Kairi', day: 'Wednesday', time: '19.45-20.45' },
+{ level: 'Advanced', major: 'Ministry', subject: 'Ancient Rune', prof: 'Prof. Elara Moonverly', day: 'Wednesday', time: '19.45-20.45' },
+{ level: 'Beginner', major: 'Ministry', subject: 'Muggle Studies', prof: 'Prof. Eight Rutherford', day: 'Thursday', time: '19.45-20.45' },
+{ level: 'Advanced', major: 'Ministry', subject: 'Muggle Studies', prof: 'Prof. Eight Rutherford', day: 'Thursday', time: '19.45-20.45' },
+{ level: 'Beginner', major: 'Ministry', subject: 'History of Magic', prof: 'Prof. Ianthe Atreides', day: 'Friday', time: '19.45-20.45' },
+{ level: 'Advanced', major: 'Ministry', subject: 'History of Magic', prof: 'Prof. Alyssa Solnicki', day: 'Friday', time: '19.45-20.45' },
+{ level: 'Extracurricular', major: 'Extracurricular', subject: 'Quidditch', prof: 'Prof. Kairo Everleight', day: 'Sunday', time: '15.00-16.00' }
+];
+
+function getStatusInfo(statusText) {
+let s = (statusText || "Scheduled (Normal)").trim();
+if (s === "") s = "Scheduled (Normal)";
+let color = 'var(--text-gold)';
+let icon = 'fa-square-check';
+let formattedText = s;
+let lowerS = s.toLowerCase();
+if (lowerS.includes('canceled') || lowerS.includes('free class')) { color = 'var(--status-canceled)'; icon = 'fa-xmark-circle'; formattedText = 'Canceled (Free Class)'; }
+else if (lowerS.includes('assignment') || lowerS.includes('tugas')) { color = 'var(--status-assignment)'; icon = 'fa-pen-to-square'; formattedText = 'Replacement Assignment'; }
+else if (lowerS.includes('replacement class') || lowerS.includes('ganti')) { color = 'var(--status-replace-class)'; icon = 'fa-clock-rotate-left'; formattedText = 'Replacement Class'; }
+else { color = 'var(--status-normal)'; icon = 'fa-square-check'; formattedText = 'Scheduled (Normal)'; }
+return { color, icon, formattedText };
+}
+
+function isQuidditchWeek(weekStr) {
+let w = weekStr.toLowerCase();
+return w.includes('1') || w.includes('one') || w.includes('first') || w.includes('2') || w.includes('two') || w.includes('second');
+}
+function openModal(major) {
+const fMonth = document.getElementById('lib-month').value;
+if (fMonth === "All") {
+alert("Please select a specific Month from the filter first to access the Final Summary.");
+return;
+}
+
+const summaryRecord = db.finalSummaries.slice(1).find(row =>
+row[0] && row[1] &&
+row[0].trim().toLowerCase() === fMonth.toLowerCase() &&
+row[1].trim().toLowerCase() === major.toLowerCase()
+);
+
+if (!summaryRecord) {
+alert(`No Final Summary available for ${major} in ${fMonth}.`);
+return;
+}
+
+const status = (summaryRecord[3] || "").trim().toLowerCase();
+if (status !== "approved" && status !== "acc") {
+alert(`The Final Summary for ${major} in ${fMonth} is currently: ${summaryRecord[3] || 'Pending'}.`);
+return;
+}
+
+currentSummaryLink = summaryRecord[2].trim();
+currentTargetSummary = major;
+currentSummaryMonth = fMonth;
+
+expectedToken = (summaryRecord[5] || "").trim();
+
+document.getElementById('modal-title').innerText = `MAJOR: ${major.toUpperCase()}`;
+document.getElementById('student-name').value = "";
+document.getElementById('vault-code-input').value = "";
+document.getElementById('passcode-input').value = "";
+document.getElementById('vault-view-1').style.display = "block";
+document.getElementById('vault-view-2').style.display = "none";
+document.getElementById('passcode-modal').style.display = "flex";
+document.getElementById('student-name').focus();
+}
+
+function closeModal() { document.getElementById('passcode-modal').style.display = "none"; }
+
+function requestPasscode() {
+const studentName = document.getElementById('student-name').value.trim();
+const vaultCode = document.getElementById('vault-code-input').value.trim();
+
+if (!studentName) { alert("Please enter your Username."); return; }
+if (!vaultCode) { alert("Please enter your 4-Digit Vault Code."); return; }
+
+const isValidVault = db.masterData.slice(1).some(row => {
+return row[1] && row[1].toString().trim() === vaultCode;
+});
+
+if (!isValidVault) {
+alert("Invalid Vault Code! Please check your 4-digit vault code.");
+return;
+}
+
+const btn = document.getElementById('request-btn');
+btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating...';
+btn.disabled = true;
+
+google.script.run
+.withSuccessHandler(function(response) {
+btn.innerHTML = '<i class="fa-solid fa-key"></i> Generate Passcode';
+btn.disabled = false;
+document.getElementById('vault-view-1').style.display = "none";
+document.getElementById('generated-passcode').innerText = expectedToken;
+document.getElementById('vault-view-2').style.display = "block";
+document.getElementById('passcode-input').focus();
+})
+.logAccessRequest(studentName, currentTargetSummary, currentSummaryMonth, "Token Requested (Vault: " + vaultCode + ")");
+}
+
+function verifyPasscode() {
+const inputVal = document.getElementById('passcode-input').value.trim();
+const btn = document.getElementById('unlock-btn');
+
+if (!inputVal) { alert("Please paste the authorization token."); return; }
+
+let isSuccess = false;
+if (expectedToken !== "" && inputVal === expectedToken) { isSuccess = true; }
+
+if (isSuccess) {
+btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Unlocking...';
+setTimeout(() => {
+window.open(currentSummaryLink, '_blank');
+closeModal();
+btn.innerHTML = '<i class="fa-solid fa-unlock-keyhole"></i> Unlock Scroll';
+}, 800);
+} else {
+alert("Invalid Token! Please copy the exact passcode provided above.");
+document.getElementById('passcode-input').value = "";
+document.getElementById('passcode-input').focus();
+}
+}
+
+function getMajor(subjectStr) {
+let s = subjectStr.toLowerCase();
+if (s.includes('charm') || s.includes('potion') || s.includes('arithmancy') || s.includes('transfiguration') || s.includes('defence') || s.includes('dark arts') || s.includes('herbolog')) return 'Auror';
+if (s.includes('astronomy') || s.includes('divination') || s.includes('care of magical') || s.includes('ancient rune') || s.includes('muggle') || s.includes('history of magic')) return 'Ministry';
+if (s.includes('quidditch') || s.includes('ekstra') || s.includes('extra')) return 'Extracurricular';
+return 'Other';
+}
+
+function getLevel(subjectStr) {
+let s = subjectStr.toLowerCase();
+if (s.includes('advanced')) return 'Advanced';
+if (s.includes('beginner')) return 'Beginner';
+if (s.includes('quidditch') || s.includes('ekstra') || s.includes('extra')) return 'Extracurricular';
+return 'All';
+}
+
+function getDaySchedule(subjectStr) {
+let s = subjectStr.toLowerCase();
+if (s.includes('charm') || s.includes('astronomy')) return 'Monday';
+if (s.includes('potion') || s.includes('divination')) return 'Tuesday';
+if (s.includes('care of magical') || s.includes('ancient rune')) return 'Wednesday';
+if (s.includes('arithmancy') || s.includes('muggle')) return 'Thursday';
+if (s.includes('transfiguration') || s.includes('history of magic')) return 'Friday';
+if (s.includes('defence') || s.includes('dark arts') || s.includes('herbolog')) return 'Saturday';
+if (s.includes('quidditch')) return 'Sunday';
+return 'Unscheduled';
+}
+
+function getBookCoverStyle(subjectStr) {
+let s = subjectStr.toLowerCase();
+let icon = 'fa-book';
+let bg = 'linear-gradient(135deg, var(--bg-panel), var(--bg-main))';
+if (s.includes('charm')) { icon = 'fa-wand-magic-sparkles'; bg = 'linear-gradient(135deg, #b71540, #0c2461)'; }
+else if (s.includes('potion')) { icon = 'fa-flask'; bg = 'linear-gradient(135deg, #079992, #0a3d62)'; }
+else if (s.includes('arithmancy')) { icon = 'fa-calculator'; bg = 'linear-gradient(135deg, #3c6382, #0a3d62)'; }
+else if (s.includes('transfiguration')) { icon = 'fa-cat'; bg = 'linear-gradient(135deg, #e58e26, #b71540)'; }
+else if (s.includes('defence') || s.includes('dark')) { icon = 'fa-khanda'; bg = 'linear-gradient(135deg, #303952, #1e272e)'; }
+else if (s.includes('herbolog')) { icon = 'fa-leaf'; bg = 'linear-gradient(135deg, #78e08f, #079992)'; }
+else if (s.includes('astronomy')) { icon = 'fa-meteor'; bg = 'linear-gradient(135deg, #1e3799, #0c2461)'; }
+else if (s.includes('divination')) { icon = 'fa-eye'; bg = 'linear-gradient(135deg, #82ccdd, #60a3bc)'; }
+else if (s.includes('care of magical')) { icon = 'fa-dragon'; bg = 'linear-gradient(135deg, #fa983a, #e55039)'; }
+else if (s.includes('ancient rune')) { icon = 'fa-gem'; bg = 'linear-gradient(135deg, #b8e994, #78e08f)'; }
+else if (s.includes('muggle')) { icon = 'fa-car'; bg = 'linear-gradient(135deg, #f8c291, #e55039)'; }
+else if (s.includes('history')) { icon = 'fa-hourglass-half'; bg = 'linear-gradient(135deg, #fad390, #e58e26)'; }
+else if (s.includes('quidditch')) { icon = 'fa-broom'; bg = 'linear-gradient(135deg, #f6b93b, #e55039)'; }
+return { icon, bg };
+}
+function extractLinkAndName(rawText) {
+if (!rawText) return { name: "", url: "" };
+let text = rawText.toString().trim();
+
+// Regex untuk mencocokkan URL dengan/tanpa http, www, domain (x.com, twitter.com, t.me, dll), atau @username
+let urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+|(?:[a-zA-Z0-9-]+\.)+(?:com|org|net|edu|gov|io|me|co|ly|app|site|online|tech|xyz|info)(?:\/[^\s]*)?|@[a-zA-Z0-9_]+)/gi;
+let matches = text.match(urlRegex);
+
+if (matches && matches.length > 0) {
+let rawUrl = matches[0];
+let hrefUrl = rawUrl;
+if (rawUrl.startsWith('@')) {
+hrefUrl = 'https://x.com/' + rawUrl.substring(1);
+} else if (!hrefUrl.startsWith('http://') && !hrefUrl.startsWith('https://')) {
+hrefUrl = 'https://' + hrefUrl;
+}
+
+let name = text.replace(rawUrl, '').trim();
+name = name.replace(/^[-–—:\s]+|[-–—:\s]+$/g, '').trim();
+if (!name) name = rawUrl;
+return { name: name, url: hrefUrl };
+}
+
+return { name: text, url: "" };
+}
+
+function extractAndRenderButton(text, btnLabel, iconClass, extraStyle = "") {
+if (!text) return '';
+let extracted = extractLinkAndName(text);
+if (extracted.url) {
+return `<a href="${extracted.url}" target="_blank" class="glowing-btn" style="${extraStyle}" onclick="event.stopPropagation();"><i class="fa-solid ${iconClass}"></i> ${btnLabel}</a>`;
+}
+return `<span style="font-size:0.85rem; color:var(--text-gold-light); opacity:0.6; font-style:italic;">${extracted.name}</span>`;
+}
+
+function formatTaskContent(text) {
+if (!text) return '';
+let urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+|(?:[a-zA-Z0-9-]+\.)+(?:com|org|net|edu|gov|io|me|co|ly)(?:\/[^\s]*)?)/gi;
+let linkedText = text.toString().replace(urlRegex, function(url) {
+let href = url.startsWith('http') ? url : 'https://' + url;
+return `<a href="${href}" target="_blank" style="color: var(--status-replace-class); text-decoration: none; border-bottom: 1px dashed var(--status-replace-class); font-weight: 500; transition: 0.3s;">[Open Link <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.7rem;"></i>]</a>`;
+});
+return `<ul class="task-content"><li>${linkedText}</li></ul>`;
+}
+
+function autoSelectCurrentDateFilters() {
+const today = new Date();
+const currentMonth = today.toLocaleString('en-US', { month: 'long' });
+const weekNum = Math.ceil(today.getDate() / 7);
+const weekSynonyms = [weekNum.toString(), `week ${weekNum}`, `${weekNum} week`];
+
+['lib-month', 'cls-month'].forEach(id => {
+const sel = document.getElementById(id);
+if(sel) { for(let opt of sel.options) { if(opt.value.toLowerCase().includes(currentMonth.toLowerCase())) { sel.value = opt.value; break; } } }
+});
+['lib-week', 'cls-week'].forEach(id => {
+const sel = document.getElementById(id);
+if(sel) { for(let opt of sel.options) { let text = opt.value.toLowerCase(); if(weekSynonyms.some(syn => text.includes(syn))) { sel.value = opt.value; break; } } }
+});
+}
+
+function switchTab(tabId) {
+document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+document.querySelectorAll(`[onclick="switchTab('${tabId}')"]`).forEach(el => el.classList.add('active'));
+document.getElementById(tabId).classList.add('active');
+window.scrollTo({ top: 0 });
+}
+
+function getCombinedUnique(data1, col1, data2, col2) {
+let s = new Set();
+data1.forEach(r => { if(r[col1]) s.add(r[col1].trim()); });
+data2.forEach(r => { if(r[col2]) s.add(r[col2].trim()); });
+return Array.from(s).filter(Boolean);
+}
+
+function populateStaticDropdown(selectId, arr) {
+const select = document.getElementById(selectId);
+if(!select) return;
+select.innerHTML = `<option value="All">All ${selectId.includes('month')?'Months':'Weeks'}</option>`;
+arr.forEach(val => { select.innerHTML += `<option value="${val}">${val}</option>`; });
+}
+
+function populateDropdown(data, colIndex, selectId, defaultText) {
+const select = document.getElementById(selectId);
+if(!select) return;
+let uniqueValues = new Set();
+data.forEach(row => { if(row[colIndex]) uniqueValues.add(row[colIndex].trim()); });
+select.innerHTML = `<option value="All">${defaultText}</option>`;
+Array.from(uniqueValues).filter(Boolean).forEach(val => { select.innerHTML += `<option value="${val}">${val}</option>`; });
+}
+
+window.onload = () => {
+google.script.run
+.withSuccessHandler(function(response) {
+if(response.success) {
+db = response;
+let allMonths = getCombinedUnique(db.library.slice(1), 1, db.classes.slice(1), 0);
+let allWeeks = getCombinedUnique(db.library.slice(1), 2, db.classes.slice(1), 1);
+populateStaticDropdown('lib-month', allMonths);
+populateStaticDropdown('cls-month', allMonths);
+populateStaticDropdown('lib-week', allWeeks);
+populateStaticDropdown('cls-week', allWeeks);
+
+populateDropdown(db.report.slice(1), 2, 'rep-major', 'All Majors');
+populateDropdown(db.report.slice(1), 0, 'rep-month', 'All Months');
+populateDropdown(db.report.slice(1), 1, 'rep-year', 'All Years');
+
+populateDropdown(db.classGuide.slice(1), 0, 'gui-level', 'All Levels');
+populateDropdown(db.classGuide.slice(1), 1, 'gui-sub', 'All Subjects');
+
+autoSelectCurrentDateFilters();
+filterLibrary();
+filterClasses();
+filterReport();
+filterClassGuide();
+document.getElementById('loader').style.display = 'none';
+} else { alert("Error: " + response.error); }
+}).withFailureHandler(function(err) {
+document.getElementById('loader').innerHTML = '<img src="https://lh3.googleusercontent.com/d/1itBW7VYne3TZcKNmiia7X2HxGn-LSD33=w256" alt=""><p>The archives did not answer. Reload the page to try again.</p>';
+}).getAllDatabase();
+};
+
+function filterLibrary() {
+const fMonth = document.getElementById('lib-month').value;
+const fWeek = document.getElementById('lib-week').value;
+const fLevel = document.getElementById('lib-level').value;
+const fMajor = document.getElementById('lib-major').value;
+const container = document.getElementById('library-content');
+
+let filtered = db.library.slice(1).filter(row => {
+let subjectVal = row[5] || "";
+let itemMajor = getMajor(subjectVal);
+let itemLevel = getLevel(subjectVal);
+let matchMonth = (fMonth === "All" || row[1].trim() === fMonth);
+let matchWeek = (fWeek === "All" || row[2].trim() === fWeek);
+let matchLevel = (fLevel === "All" || itemLevel === fLevel);
+let matchMajor = (fMajor === "All" || itemMajor === fMajor);
+return matchMonth && matchWeek && matchLevel && matchMajor;
+});
+
+if(filtered.length === 0) {
+container.innerHTML = '<p style="text-align:center; margin-top:20px; font-style:italic;">No scrolls found on this shelf.</p>';
+return;
+}
+
+let html = ``;
+const daysOrderList = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Unscheduled'];
+
+daysOrderList.forEach(day => {
+let booksForDay = filtered.filter(row => getDaySchedule(row[5] || "") === day);
+if (booksForDay.length > 0) {
+html += `<div class="shelf-group"><div class="shelf-day-title"><i class="fa-regular fa-calendar-days"></i> ${day}</div><div class="shelf-row">`;
+booksForDay.forEach(row => {
+let subjectStr = row[5] || "Unknown";
+let style = getBookCoverStyle(subjectStr);
+let rawText = (row[4] || "").toString().trim();
+let extracted = extractLinkAndName(rawText);
+let linkBtn = extracted.url ? `<a href="${extracted.url}" target="_blank" class="book-btn" onclick="event.stopPropagation();"><i class="fa-solid fa-book-open-reader"></i> Read The Book</a>` : `<span style="font-size:0.7rem; color: rgba(255,255,255,0.5);">Unavailable</span>`;
+
+html += `<div class="book-3d" style="background: ${style.bg};">
+<i class="fa-solid ${style.icon} book-icon"></i>
+<div class="book-title">${subjectStr}</div>
+<div class="book-major">${getMajor(subjectStr)}</div>
+<div class="book-action">${linkBtn}</div>
+</div>`;
+});
+html += `</div><div class="wood-shelf"></div></div>`;
+}
+});
+
+container.innerHTML = html;
+}
+
+function filterClasses() {
+const fMonth = document.getElementById('cls-month').value;
+const fWeek = document.getElementById('cls-week').value;
+const fLevel = document.getElementById('cls-level').value;
+const fMajor = document.getElementById('cls-major').value;
+const container = document.getElementById('classes-content');
+
+if(fMonth === "All" || fWeek === "All") {
+container.innerHTML = '<p style="text-align:center; font-style:italic; width:100%; grid-column: 1 / -1; color: var(--text-gold);">Please select a specific Month and Week to view active duties.</p>';
+return;
+}
+
+let html = ``;
+let classesRendered = 0;
+const daysOrderList = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Unscheduled'];
+
+daysOrderList.forEach(day => {
+let classesForDay = baseSchedule.filter(base => {
+if(base.day !== day) return false;
+
+if(base.subject === 'Quidditch' && fWeek !== "All" && !isQuidditchWeek(fWeek)) return false;
+
+if(fLevel !== "All" && base.level !== fLevel) return false;
+if(fMajor !== "All" && base.major !== fMajor) return false;
+return true;
+});
+
+if (classesForDay.length > 0) {
+let dayHtml = ``;
+
+classesForDay.forEach(base => {
+let sheetOverride = null;
+
+if(fMonth !== "All" && fWeek !== "All" && db.classes) {
+sheetOverride = db.classes.slice(1).find(row => {
+return row[0] && row[1] &&
+row[0].trim().toLowerCase() === fMonth.toLowerCase() &&
+row[1].trim().toLowerCase() === fWeek.toLowerCase() &&
+(row[3]||"").toLowerCase().includes(base.subject.toLowerCase()) &&
+(row[2]||"").toLowerCase().includes(base.level.toLowerCase());
+});
+}
+
+let statusRaw = sheetOverride && sheetOverride[4] ? sheetOverride[4] : "Scheduled (Normal)";
+let deadlineRaw = sheetOverride && sheetOverride[5] ? sheetOverride[5] : `${base.day},${base.time}`;
+let taskRaw = sheetOverride ? sheetOverride[6] : "";
+let linkRaw = sheetOverride ? sheetOverride[7] : "";
+
+let status = getStatusInfo(statusRaw);
+let linkBtn = extractAndRenderButton(linkRaw, "Open Detail", "fa-wand-magic-sparkles", "width: auto; padding: 6px 12px; font-size:0.75rem;");
+let taskHtml = taskRaw ? formatTaskContent(taskRaw) : "";
+
+dayHtml += `
+<div class="class-card" style="border-left: 6px solid ${status.color};">
+<div>
+<div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:flex-start;">
+<span class="major-badge">${base.level} ${base.major}</span>
+<span class="status-badge" style="color:${status.color};"><i class="fa-solid ${status.icon}"></i> ${status.formattedText}</span>
+</div>
+<h3 style="font-size: 1.4rem; color:var(--text-gold-light); margin-bottom:5px; font-family:'Cinzel'; line-height:1.2;">${base.subject}</h3>
+<p style="font-size:0.8rem; color:var(--text-light); margin-bottom:10px;"><i class="fa-solid fa-user-tie"></i> ${base.prof}</p>${taskHtml}
+</div>
+<div style="border-top:1px solid rgba(224,181,143,0.2); padding-top:15px; display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+<span style="font-size:0.8rem; color:var(--bg-card-light); font-weight:500;"><i class="fa-regular fa-clock" style="color:var(--text-gold)"></i> ${deadlineRaw}</span>${linkBtn}
+</div>
+</div>`;
+classesRendered++;
+});
+
+if (dayHtml !== ``) {
+html += `<div style="grid-column: 1 / -1; margin-top: 15px;"><div class="shelf-day-title"><i class="fa-regular fa-calendar-days"></i> ${day}</div></div>`;
+html += dayHtml;
+}
+}
+});
+
+if(classesRendered === 0) {
+container.innerHTML = '<p style="text-align:center; font-style:italic; width:100%; grid-column: 1 / -1; color: var(--text-gold);">No active tasks found for these filters.</p>';
+} else {
+container.innerHTML = html;
+}
+}
+
+function filterReport() {
+const fMaj = document.getElementById('rep-major').value;
+const fMon = document.getElementById('rep-month').value;
+const fYr = document.getElementById('rep-year').value;
+const container = document.getElementById('report-content');
+
+let filtered = db.report.slice(1).filter(row => {
+return (fMaj === "All" || (row[2] || "").trim() === fMaj) &&
+(fMon === "All" || (row[0] || "").trim() === fMon) &&
+(fYr === "All" || (row[1] || "").trim() === fYr);
+});
+
+if(filtered.length === 0) { container.innerHTML = '<p style="text-align:center; font-style:italic; width:100%;">No reports found.</p>'; return; }
+
+container.innerHTML = '';
+filtered.forEach(row => {
+let reportMonth = (row[0] || "").trim();
+let reportYear = (row[1] || "").trim();
+let reportMajor = (row[2] || "").trim();
+let linkBtn = extractAndRenderButton(row[3], "UNROLL SCROLL", "fa-folder-open", "background: var(--bg-main); color: var(--text-gold) !important; border: none; padding: 12px;");
+
+container.innerHTML += `
+<div class="report-card">
+<div style="margin: 0 auto 15px; font-size: 2.5rem; color: var(--bg-main); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));"><i class="fa-solid fa-shield-halved"></i></div>
+<h3 style="color:var(--bg-main); font-size:1.3rem; font-weight:700; font-family:'Cinzel'; margin-bottom: 5px;">ACADEMIC REPORT</h3>
+<p style="font-size:0.75rem; color:#666; font-weight:600; margin-bottom:25px; letter-spacing:1.5px; text-transform:uppercase;">${reportMajor}</p>
+<div style="background: rgba(224, 181, 143, 0.2); border-radius: 8px; padding: 15px; margin-bottom: 25px; border: 1px solid rgba(224, 181, 143, 0.5);">
+<span style="font-size:0.65rem; color:#555; font-weight:600; letter-spacing:1px;">EVALUATION PERIOD</span>
+<h4 style="color:var(--bg-main); font-size:1.4rem; margin-top:5px;">${reportMonth} ${reportYear}</h4>
+</div>
+${linkBtn}
+</div>`;
+});
+}
+
+function filterClassGuide() {
+const fLvl = document.getElementById('gui-level').value;
+const fSub = document.getElementById('gui-sub').value;
+const container = document.getElementById('classguide-content');
+
+let filtered = db.classGuide.slice(1).filter(row => {
+return (fLvl === "All" || row[0].trim() === fLvl) &&
+(fSub === "All" || row[1].trim() === fSub);
+});
+if(filtered.length === 0) { container.innerHTML = '<tr><td colspan="7" style="text-align:center; font-style:italic;">No guide found.</td></tr>'; return; }
+
+container.innerHTML = '';
+filtered.forEach(row => {
+let classRoomBtn = extractAndRenderButton(row[3], "Enter Class", "fa-door-open", "padding: 6px 12px; width: auto; font-size: 0.75rem;");
+let rulesBtn = extractAndRenderButton(row[4], "View Rules", "fa-scroll", "padding: 6px 12px; width: auto; font-size: 0.75rem; background: rgba(224, 181, 143, 0.1); border: 1px solid var(--text-gold); color: var(--text-gold) !important; box-shadow: none; text-shadow: none;");
+
+let profRaw = (row[2] || "").trim();
+let profData = extractLinkAndName(profRaw);
+let profHtml = "";
+
+if (profData.url) {
+profHtml = `<a href="${profData.url}" target="_blank" style="color: var(--text-gold); text-decoration: none; font-weight: 600; border-bottom: 1px dashed var(--text-gold); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s;" onclick="event.stopPropagation();"><i class="fa-solid fa-user-tie"></i> ${profData.name}</a>`;
+} else {
+profHtml = `<span style="font-weight: 600; color: var(--text-gold-light); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-user-tie" style="color:var(--text-gold);"></i> ${profData.name || profRaw}</span>`;
+}
+
+container.innerHTML += `
+<tr>
+<td style="font-weight: 600; color: var(--text-gold-light); white-space: nowrap;">${row[0] || ""}</td>
+<td style="color: var(--text-gold); font-size: 1.1rem; font-family:'Cinzel'; letter-spacing: 0.5px; white-space: nowrap;">${row[1] || ""}</td>
+<td style="white-space: nowrap;">${profHtml}</td>
+<td style="text-align:center; white-space: nowrap;">${classRoomBtn}</td>
+<td style="text-align:center; white-space: nowrap;">${rulesBtn}</td>
+<td style="color: var(--bg-card-light); font-size: 0.85rem; white-space: nowrap;"><i class="fa-solid fa-clock-rotate-left" style="color:var(--text-gold); margin-right:5px;"></i> ${row[5] || ""}</td>
+<td style="color: var(--bg-card-light); font-size: 0.85rem; white-space: nowrap;"><i class="fa-regular fa-calendar-xmark" style="color:var(--text-gold); margin-right:5px;"></i> ${row[6] || ""}</td>
+</tr>`;
+});
+}
+</script>
 </body>
 </html>
