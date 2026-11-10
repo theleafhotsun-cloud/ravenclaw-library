@@ -20,8 +20,8 @@
 (function () {
   'use strict';
 
-  var API = 'https://script.google.com/macros/s/AKfycbwuYs1j6QxlGI1jW4R8Duaqjz5KBH2fhOnu94OOjDa0GKRe1wpsTd5VhgtpZRVybpT_xA/exec';
-  var HOME = '';              // OPTIONAL: address of the account page on the main site, e.g. 'https://yoursite.example/profile' (used for the "Create an account" link)
+  var API = 'https://script.google.com/macros/s/AKfycbzgBvj_5Q5QetFmr4UlM3omrNXRnXlRnkg6eZ_9cbgCs1af2-KnBEvM3QcC3dd1eUoldw/exec';
+  var HOME = 'https://ravenclaw-website.vercel.app/profile';              // OPTIONAL: address of the account page on the main site, e.g. 'https://yoursite.example/profile' (used for the "Create an account" link)
   var KEY = 'rcl-session';    // library session (localStorage)
   var OKKEY = 'rcl-ok';       // time of the last successful server check (sessionStorage)
   var RECHECK_MS = 5 * 60 * 1000; // a session the server has checked is trusted this long (no check on every page)
