@@ -52,7 +52,7 @@
 (function () {
   'use strict';
 
-  /* where to go after signing in: only a path on this library site (never another site) */
+  /* abis login mau ke mana: cuma path di situs library ini sendiri (jangan pernah situs lain) */
   var next = new URLSearchParams(location.search).get('next') || '/';
   if (!/^\/(?![\/\\])/.test(next) || /[\u0000-\u001f]/.test(next) || /^\/(login|_gate)(\/|\.|\?|$)/.test(next)) next = '/';
 
@@ -78,12 +78,12 @@
     });
   }
 
-  /* 1. The ticket from the main site is in the # part of the address: take it, then remove it from the history */
+  /* 1. Ticket dari situs utama ada di bagian # alamat: ambil, terus hapus dari history */
   var ticket = '';
   var m = /(?:^#|&)ticket=([0-9a-f]{64})(?:&|$)/.exec(location.hash);
   if (m) {
     ticket = m[1];
-    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* ignore */ }
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) { /* cuekin aja */ }
   }
 
   if (ticket) {
@@ -93,14 +93,14 @@
       showForm((j && j.error ? j.error + ' ' : '') + 'Sign in with your username and password, or open the Library again from your account page.');
     });
   } else {
-    /* 2. You may already have a valid session */
+    /* 2. Siapa tau udah punya session yang valid */
     fetch('/_gate/me', { credentials: 'same-origin', cache: 'no-store' })
       .then(function (r) { return r.json(); })
       .then(function (j) { if (j && j.ok) go(); else showForm(''); })
       .catch(function () { showForm(''); });
   }
 
-  /* 3. Sign in directly with username + password */
+  /* 3. Sign in langsung pakai username + password */
   $('form').addEventListener('submit', function (ev) {
     ev.preventDefault();
     var u = $('u').value.trim(), p = $('p').value;
