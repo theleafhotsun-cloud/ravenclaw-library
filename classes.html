@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class Information · Library of Ravenclaw</title>
+<meta name="theme-color" content="#04061a">
+<meta name="description" content="Schedules, assignments and replacement classes.">
+<meta property="og:title" content="House of Ravenclaw - Library">
+<link rel="icon" href="https://lh3.googleusercontent.com/d/1eQXRQppRAoOD6T9FLiRMVJSaHZSZ1E-a=s64">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/library.css">
+</head>
+<body>
+<canvas id="stars" aria-hidden="true"></canvas><canvas id="sparks" aria-hidden="true"></canvas>
+
+<header class="hp-nav">
+<a class="hp-brand" href="/" aria-label="House of Ravenclaw home"><img src="https://lh3.googleusercontent.com/d/1eQXRQppRAoOD6T9FLiRMVJSaHZSZ1E-a=w80" alt=""><span>HOUSE OF RAVENCLAW</span></a>
+<nav class="nav-menu" aria-label="Library sections">
+<a class="nav-item" href="/"><i class="fa-solid fa-house"></i> <span class="nav-txt">Home</span></a>
+<a class="nav-item" href="/library.html"><i class="fa-solid fa-book-open"></i> <span class="nav-txt">Library</span></a>
+<a class="nav-item active" href="/classes.html" aria-current="page"><i class="fa-solid fa-scroll"></i> <span class="nav-txt">Class Information</span></a>
+<a class="nav-item" href="/reports.html"><i class="fa-solid fa-shield-halved"></i> <span class="nav-txt">Academic Reports</span></a>
+<a class="nav-item" href="/directory.html"><i class="fa-solid fa-landmark"></i> <span class="nav-txt">Class Directory</span></a>
+<a class="nav-item" href="/owl-guide.html"><i class="fa-solid fa-file-signature"></i> <span class="nav-txt">O.W.L Guide</span></a>
+</nav>
+</header>
+<main class="main-content">
+<div id="loader" class="loading-screen">
+<img src="https://lh3.googleusercontent.com/d/1itBW7VYne3TZcKNmiia7X2HxGn-LSD33=w128" alt="Ravenclaw crest">
+<p id="loader-msg">Consulting the Archives...</p>
+</div>
+
+<section id="classes" class="section active">
+<div class="page-header">
+<h2>Class Information</h2>
+<p class="page-sub">Schedules, assignments and replacement classes.</p>
+</div>
+<div class="filter-bar">
+<div class="filter-group"><span class="filter-label">Month</span><select id="cls-month" class="filter-select" onchange="filterClasses()"></select></div>
+<div class="filter-group"><span class="filter-label">Week</span><select id="cls-week" class="filter-select" onchange="filterClasses()"></select></div>
+<div class="filter-group"><span class="filter-label">Level</span>
+<select id="cls-level" class="filter-select" onchange="filterClasses()">
+<option value="All">All Levels</option><option value="Beginner">Beginner</option><option value="Advanced">Advanced</option><option value="Extracurricular">Extracurricular</option>
+</select>
+</div>
+<div class="filter-group"><span class="filter-label">Major</span>
+<select id="cls-major" class="filter-select" onchange="filterClasses()">
+<option value="All">All Majors</option><option value="Auror">Auror</option><option value="Ministry">Ministry</option>
+</select>
+</div>
+</div>
+<div id="classes-content" class="board"></div>
+</section>
+</main>
+<script src="/config.js"></script>
+<script src="/library.js"></script>
+<script>
+function getStatusInfo(statusText) {
+let s = (statusText || "Scheduled (Normal)").trim();
+if (s === "") s = "Scheduled (Normal)";
+let color = 'var(--text-gold)';
+let icon = 'fa-square-check';
+let formattedText = s;
+let lowerS = s.toLowerCase();
+if (lowerS.includes('canceled') || lowerS.includes('free class')) { color = 'var(--status-canceled)'; icon = 'fa-xmark-circle'; formattedText = 'Canceled (Free Class)'; }
+else if (lowerS.includes('assignment') || lowerS.includes('tugas')) { color = 'var(--status-assignment)'; icon = 'fa-pen-to-square'; formattedText = 'Replacement Assignment'; }
+else if (lowerS.includes('replacement class') || lowerS.includes('ganti')) { color = 'var(--status-replace-class)'; icon = 'fa-clock-rotate-left'; formattedText = 'Replacement Class'; }
+else { color = 'var(--status-normal)'; icon = 'fa-square-check'; formattedText = 'Scheduled (Normal)'; }
+return { color, icon, formattedText };
+}
+function isQuidditchWeek(weekStr) {
+let w = weekStr.toLowerCase();
+return w.includes('1') || w.includes('one') || w.includes('first') || w.includes('2') || w.includes('two') || w.includes('second');
+}
+// Jadwal diambil dari tab "panduan kelas": Level (A), Subjek (B), Akun Pengajar (C).
+// Kolom opsional dengan judul "Hari" / "Jam" (kolom H ke kanan) dipakai kalau ada.
+const WEEKDAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const ID_DAY = { senin:'Monday', selasa:'Tuesday', rabu:'Wednesday', kamis:'Thursday', jumat:'Friday', sabtu:'Saturday', minggu:'Sunday' };
+function normDay(s) { const k = String(s || '').toLowerCase().replace(/[^a-z]/g, ''); const e = ID_DAY[k] || (k ? k[0].toUpperCase() + k.slice(1) : ''); return WEEKDAYS.indexOf(e) > -1 ? e : ''; }
+function schedule() {
+const g = db.classGuide || [], h = g[0] || [];
+const ix = function(re) { return h.findIndex(function(t, i) { return i >= 7 && re.test(String(t || '')); }); };
+const dI = ix(/hari|day/i), tI = ix(/jam|waktu|time|pukul/i);
+return g.slice(1).filter(function(r) { return r[0] && r[1]; }).map(function(r) {
+const subject = r[1].trim(), p = extractLinkAndName(r[2]);
+return { level: r[0].trim(), major: getMajor(subject), subject: subject, prof: p.name || '-',
+day: (dI > -1 && normDay(r[dI])) || getDaySchedule(subject), time: tI > -1 ? String(r[tI] || '').trim() : '' };
+});
+}
+function filterClasses() {
+if (!db.library) return;
+const fMonth = document.getElementById('cls-month').value;
+const fWeek = document.getElementById('cls-week').value;
+const fLevel = document.getElementById('cls-level').value;
+const fMajor = document.getElementById('cls-major').value;
+const container = document.getElementById('classes-content');
+
+if(fMonth === "All" || fWeek === "All") {
+container.innerHTML = '<p style="text-align:center; font-style:italic; width:100%; grid-column: 1 / -1; color: var(--text-gold);">Please select a specific Month and Week to view active duties.</p>';
+return;
+}
+
+let html = ``;
+let classesRendered = 0;
+const daysOrderList = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Unscheduled'];
+
+daysOrderList.forEach(day => {
+let classesForDay = schedule().filter(base => {
+if(base.day !== day) return false;
+
+if(/quidditch/i.test(base.subject) && fWeek !== "All" && !isQuidditchWeek(fWeek)) return false;
+
+if(fLevel !== "All" && base.level !== fLevel) return false;
+if(fMajor !== "All" && base.major !== fMajor) return false;
+return true;
+});
+
+if (classesForDay.length > 0) {
+let dayHtml = ``;
+
+classesForDay.forEach(base => {
+let sheetOverride = null;
+
+if(fMonth !== "All" && fWeek !== "All" && db.classes) {
+sheetOverride = db.classes.slice(1).find(row => {
+return row[0] && row[1] &&
+row[0].trim().toLowerCase() === fMonth.toLowerCase() &&
+row[1].trim().toLowerCase() === fWeek.toLowerCase() &&
+(row[3]||"").toLowerCase().includes(base.subject.toLowerCase()) &&
+(row[2]||"").toLowerCase().includes(base.level.toLowerCase());
+});
+}
+
+let statusRaw = sheetOverride && sheetOverride[4] ? sheetOverride[4] : "Scheduled (Normal)";
+let deadlineRaw = sheetOverride && sheetOverride[5] ? sheetOverride[5] : (base.time ? base.day + ',' + base.time : base.day);
+let taskRaw = sheetOverride ? sheetOverride[6] : "";
+let linkRaw = sheetOverride ? sheetOverride[7] : "";
+
+let status = getStatusInfo(statusRaw);
+let linkBtn = extractAndRenderButton(linkRaw, "Open Detail", "fa-wand-magic-sparkles", "width: auto; padding: 6px 12px; font-size:0.75rem;");
+let taskHtml = taskRaw ? formatTaskContent(taskRaw) : "";
+
+dayHtml += `<div class="wz" style="--st:${status.color};--bg:${getBookCoverStyle(base.subject).bg}" onclick="this.classList.toggle('flip')"><div class="wz-in"><div class="wz-f wz-front"><div class="wz-top"><span>${base.level} ${base.major}</span><i class="fa-solid ${status.icon}" style="color:var(--st)"></i></div><div class="wz-art"><i class="fa-solid ${getBookCoverStyle(base.subject).icon}"></i></div><h3>${base.subject}</h3><p class="wz-prof"><i class="fa-solid fa-user-tie"></i> ${base.prof}</p><div class="wz-foot"><span class="wz-time">${deadlineRaw}</span><span class="wz-state">${status.formattedText}</span></div></div><div class="wz-f wz-back">${taskHtml||'<p class="wz-empty">Tidak ada tugas minggu ini.</p>'}<div>${linkBtn}</div><small class="wz-hint">Ketuk untuk membalik</small></div></div></div>`;
+classesRendered++;
+});
+
+if (dayHtml !== ``) {
+html += `<div style="grid-column: 1 / -1; margin-top: 15px;"><div class="shelf-day-title"><i class="fa-regular fa-calendar-days"></i> ${day}</div></div>`;
+html += dayHtml;
+}
+}
+});
+
+if(classesRendered === 0) {
+container.innerHTML = '<p style="text-align:center; font-style:italic; width:100%; grid-column: 1 / -1; color: var(--text-gold);">No active tasks found for these filters.</p>';
+} else {
+container.innerHTML = html;
+}
+}
+window.RC_POPULATE = function(d) { const m = getCombinedUnique(d.library.slice(1), 1, d.classes.slice(1), 0), w = getCombinedUnique(d.library.slice(1), 2, d.classes.slice(1), 1); populateStaticDropdown('cls-month', m); populateStaticDropdown('cls-week', w); };
+window.RC_RENDER = filterClasses;
+</script>
+</body>
+</html>
