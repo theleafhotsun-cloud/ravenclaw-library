@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Academic Library · Library of Ravenclaw</title>
+<meta name="theme-color" content="#04061a">
+<meta name="description" content="Class scrolls, shelved by day.">
+<meta property="og:title" content="House of Ravenclaw - Library">
+<link rel="icon" href="https://lh3.googleusercontent.com/d/1eQXRQppRAoOD6T9FLiRMVJSaHZSZ1E-a=s64">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/library.css">
+</head>
+<body>
+<canvas id="stars" aria-hidden="true"></canvas><canvas id="sparks" aria-hidden="true"></canvas>
+<div id="passcode-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+<div class="modal-card">
+<button type="button" class="btn-close-modal" onclick="closeModal()" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+<div class="seal-ring"><i class="fa-solid fa-lock modal-lock"></i></div>
+<h3 id="modal-title">MAJOR</h3>
+
+<div id="vault-view-1">
+<p class="modal-note">Enter your username and 4-digit Vault Code to generate an authorization token.</p>
+<input type="text" id="student-name" class="modal-input" placeholder="Your Username" autocomplete="off">
+<input type="text" id="vault-code-input" class="modal-input" placeholder="4-Digit Vault Code" autocomplete="off" maxlength="4">
+<button type="button" id="request-btn" class="glowing-btn" onclick="requestPasscode()"><i class="fa-solid fa-key"></i> Generate Passcode</button>
+</div>
+
+<div id="vault-view-2" style="display:none;">
+<p class="modal-ok"><i class="fa-solid fa-circle-check"></i> Access Granted</p>
+<p class="modal-note" style="margin-bottom:10px;">Your secured passcode:</p>
+<div class="token-box" id="generated-passcode"></div>
+<p class="modal-note">Copy the passcode above and paste it below to unlock.</p>
+<input type="text" id="passcode-input" class="modal-input" placeholder="Paste Token Here..." autocomplete="off">
+<button type="button" id="unlock-btn" class="glowing-btn" onclick="verifyPasscode()"><i class="fa-solid fa-unlock-keyhole"></i> Unlock Scroll</button>
+</div>
+</div>
+</div>
+<header class="hp-nav">
+<a class="hp-brand" href="/" aria-label="House of Ravenclaw home"><img src="https://lh3.googleusercontent.com/d/1eQXRQppRAoOD6T9FLiRMVJSaHZSZ1E-a=w80" alt=""><span>HOUSE OF RAVENCLAW</span></a>
+<nav class="nav-menu" aria-label="Library sections">
+<a class="nav-item" href="/"><i class="fa-solid fa-house"></i> <span class="nav-txt">Home</span></a>
+<a class="nav-item active" href="/library.html" aria-current="page"><i class="fa-solid fa-book-open"></i> <span class="nav-txt">Library</span></a>
+<a class="nav-item" href="/classes.html"><i class="fa-solid fa-scroll"></i> <span class="nav-txt">Class Information</span></a>
+<a class="nav-item" href="/reports.html"><i class="fa-solid fa-shield-halved"></i> <span class="nav-txt">Academic Reports</span></a>
+<a class="nav-item" href="/directory.html"><i class="fa-solid fa-landmark"></i> <span class="nav-txt">Class Directory</span></a>
+<a class="nav-item" href="/owl-guide.html"><i class="fa-solid fa-file-signature"></i> <span class="nav-txt">O.W.L Guide</span></a>
+</nav>
+</header>
+<main class="main-content">
+<div id="loader" class="loading-screen">
+<img src="https://lh3.googleusercontent.com/d/1itBW7VYne3TZcKNmiia7X2HxGn-LSD33=w128" alt="Ravenclaw crest">
+<p id="loader-msg">Consulting the Archives...</p>
+</div>
+
+<section id="library" class="section active">
+<div class="page-header">
+<h2>Academic Library</h2>
+<p class="page-sub">Class scrolls, shelved by day.</p>
+<div class="vault-panel" id="vault-panel"><i class="sp" style="--x:6%;--y:18%;--d:3s">✦</i><i class="sp" style="--x:14%;--y:70%;--d:4.2s">✦</i><i class="sp" style="--x:30%;--y:12%;--d:3.6s">✦</i><i class="sp" style="--x:48%;--y:86%;--d:5s">✦</i><i class="sp" style="--x:66%;--y:10%;--d:4s">✦</i><i class="sp" style="--x:82%;--y:64%;--d:3.3s">✦</i><i class="sp" style="--x:93%;--y:22%;--d:4.6s">✦</i><i class="sp" style="--x:74%;--y:90%;--d:3.9s">✦</i><h3 class="vp-title">Final Summary</h3><p class="vp-sub">Pick a month, then open the vault of your major.</p><div class="vp-months" id="vault-months" role="group" aria-label="Month"></div><div class="vp-vaults"><button type="button" class="vault" data-major="Auror" data-state="none" onclick="vaultOpen('Auror')"><span class="vault-orb"><span class="vault-ring r1"></span><span class="vault-ring r2"></span><span class="vault-core"><i class="fa-solid fa-shield-halved"></i></span></span><b class="vault-name">Auror</b><span class="vault-state">Choose a month</span><span class="vault-cta"><i class="fa-solid fa-key"></i> Open vault</span></button><button type="button" class="vault" data-major="Ministry" data-state="none" onclick="vaultOpen('Ministry')"><span class="vault-orb"><span class="vault-ring r1"></span><span class="vault-ring r2"></span><span class="vault-core"><i class="fa-solid fa-scale-balanced"></i></span></span><b class="vault-name">Ministry</b><span class="vault-state">Choose a month</span><span class="vault-cta"><i class="fa-solid fa-key"></i> Open vault</span></button></div><p class="vp-hint" id="vault-hint" role="status"></p></div>
+</div>
+<div class="filter-bar">
+<div class="filter-group"><span class="filter-label">Month</span><select id="lib-month" class="filter-select" onchange="filterLibrary()"></select></div>
+<div class="filter-group"><span class="filter-label">Week</span><select id="lib-week" class="filter-select" onchange="filterLibrary()"></select></div>
+<div class="filter-group"><span class="filter-label">Level</span>
+<select id="lib-level" class="filter-select" onchange="filterLibrary()">
+<option value="All">All Levels</option><option value="Beginner">Beginner</option><option value="Advanced">Advanced</option><option value="Extracurricular">Extracurricular</option>
+</select>
+</div>
+<div class="filter-group"><span class="filter-label">Major</span>
+<select id="lib-major" class="filter-select" onchange="filterLibrary()">
+<option value="All">All Majors</option><option value="Auror">Auror</option><option value="Ministry">Ministry</option>
+</select>
+</div>
+</div>
+<div id="library-content" class="shelf-container"></div>
+</section>
+</main>
+<script src="/config.js"></script>
+<script src="/library.js"></script>
+<script>
+let currentTargetSummary = "";
+let currentSummaryLink = "";
+let currentSummaryMonth = "";
+let expectedToken = "";
+function openModal(major) {
+if (!liveLoaded) { alert("The archives are still syncing. Try again in a moment."); return; }
+const fMonth = document.getElementById('lib-month').value;
+if (fMonth === "All") {
+alert("Please select a specific Month from the filter first to access the Final Summary.");
+return;
+}
+
+const summaryRecord = db.finalSummaries.slice(1).find(row =>
+row[0] && row[1] &&
+row[0].trim().toLowerCase() === fMonth.toLowerCase() &&
+row[1].trim().toLowerCase() === major.toLowerCase()
+);
+
+if (!summaryRecord) {
+alert(`No Final Summary available for ${major} in ${fMonth}.`);
+return;
+}
+
+const status = (summaryRecord[3] || "").trim().toLowerCase();
+if (status !== "approved" && status !== "acc") {
+alert(`The Final Summary for ${major} in ${fMonth} is currently: ${summaryRecord[3] || 'Pending'}.`);
+return;
+}
+
+currentSummaryLink = summaryRecord[2].trim();
+currentTargetSummary = major;
+currentSummaryMonth = fMonth;
+
+expectedToken = (summaryRecord[5] || "").trim();
+
+document.getElementById('modal-title').innerText = `${major} Vault`;
+document.getElementById('student-name').value = "";
+document.getElementById('vault-code-input').value = "";
+document.getElementById('passcode-input').value = "";
+document.getElementById('vault-view-1').style.display = "block";
+document.getElementById('vault-view-2').style.display = "none";
+document.getElementById('passcode-modal').style.display = "flex";
+document.getElementById('student-name').focus();
+}
+
+function closeModal() { document.getElementById('passcode-modal').style.display = "none"; }
+
+function requestPasscode() {
+const studentName = document.getElementById('student-name').value.trim();
+const vaultCode = document.getElementById('vault-code-input').value.trim();
+
+if (!studentName) { alert("Please enter your Username."); return; }
+if (!vaultCode) { alert("Please enter your 4-Digit Vault Code."); return; }
+
+const isValidVault = db.masterData.slice(1).some(row => {
+return row[1] && row[1].toString().trim() === vaultCode;
+});
+
+if (!isValidVault) {
+alert("Invalid Vault Code! Please check your 4-digit vault code.");
+return;
+}
+
+const btn = document.getElementById('request-btn');
+btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generating...';
+btn.disabled = true;
+
+callApi('logAccess', { name: studentName, major: currentTargetSummary, month: currentSummaryMonth, status: "Token Requested (Vault: " + vaultCode + ")" })
+.then(function(res) {
+if (!res || !res.success) throw new Error((res && res.error) || 'The request could not be recorded.');
+btn.innerHTML = '<i class="fa-solid fa-key"></i> Generate Passcode';
+btn.disabled = false;
+document.getElementById('vault-view-1').style.display = "none";
+document.getElementById('generated-passcode').innerText = expectedToken;
+document.getElementById('vault-view-2').style.display = "block";
+document.getElementById('passcode-input').focus();
+})
+.catch(function(err) {
+btn.innerHTML = '<i class="fa-solid fa-key"></i> Generate Passcode';
+btn.disabled = false;
+alert('Could not record your request: ' + (err && err.message ? err.message : err));
+});
+}
+
+function verifyPasscode() {
+const inputVal = document.getElementById('passcode-input').value.trim();
+const btn = document.getElementById('unlock-btn');
+
+if (!inputVal) { alert("Please paste the authorization token."); return; }
+
+let isSuccess = false;
+if (expectedToken !== "" && inputVal === expectedToken) { isSuccess = true; }
+
+if (isSuccess) {
+btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Unlocking...';
+setTimeout(() => {
+window.open(currentSummaryLink, '_blank');
+closeModal();
+btn.innerHTML = '<i class="fa-solid fa-unlock-keyhole"></i> Unlock Scroll';
+}, 800);
+} else {
+alert("Invalid Token! Please copy the exact passcode provided above.");
+document.getElementById('passcode-input').value = "";
+document.getElementById('passcode-input').focus();
+}
+}
+function resetLibraryFilters() {
+['lib-month', 'lib-week', 'lib-level', 'lib-major'].forEach(function(id) { document.getElementById(id).value = 'All'; });
+filterLibrary();
+}
+
+function filterLibrary() {
+if (!db.library) return;
+const fMonth = document.getElementById('lib-month').value;
+const fWeek = document.getElementById('lib-week').value;
+const fLevel = document.getElementById('lib-level').value;
+const fMajor = document.getElementById('lib-major').value;
+const container = document.getElementById('library-content');
+
+let filtered = db.library.slice(1).filter(row => {
+let subjectVal = row[5] || "";
+let itemMajor = getMajor(subjectVal);
+let itemLevel = getLevel(subjectVal);
+let matchMonth = (fMonth === "All" || row[1].trim() === fMonth);
+let matchWeek = (fWeek === "All" || row[2].trim() === fWeek);
+let matchLevel = (fLevel === "All" || itemLevel === fLevel);
+let matchMajor = (fMajor === "All" || itemMajor === fMajor);
+return matchMonth && matchWeek && matchLevel && matchMajor;
+});
+
+if(filtered.length === 0) {
+container.innerHTML = '<p style="text-align:center; margin-top:20px; font-style:italic;">No scrolls match these filters (' + (db.library.length - 1) + ' scrolls loaded in total).</p><p style="text-align:center; margin-top:16px;"><button type="button" class="hp-btn line" onclick="resetLibraryFilters()">Show all scrolls</button></p>';
+return;
+}
+
+let html = ``;
+const daysOrderList = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday', 'Unscheduled'];
+
+daysOrderList.forEach(day => {
+let booksForDay = filtered.filter(row => getDaySchedule(row[5] || "") === day);
+if (booksForDay.length > 0) {
+html += `<div class="shelf-group"><div class="shelf-day-title"><i class="fa-regular fa-calendar-days"></i> ${day}</div><div class="shelf-row">`;
+booksForDay.forEach(row => {
+let subjectStr = row[5] || "Unknown";
+let style = getBookCoverStyle(subjectStr);
+let rawText = (row[4] || "").toString().trim();
+let extracted = extractLinkAndName(rawText);
+let linkBtn = extracted.url ? `<a href="${extracted.url}" target="_blank" class="book-btn" onclick="event.stopPropagation();"><i class="fa-solid fa-book-open-reader"></i> Read The Book</a>` : `<span style="font-size:0.7rem; color: rgba(255,255,255,0.5);">Unavailable</span>`;
+
+html += `<div class="tome" style="--bg:${style.bg}" onclick="this.classList.toggle('open')"><div class="tome-in"><div class="face back"></div><div class="face spine"><b>${subjectStr}</b></div><div class="face pages"></div><div class="face leaf"><i class="fa-solid ${style.icon}"></i><span class="lf-t">${getMajor(subjectStr)}</span>${linkBtn}</div><div class="cover"><div class="face cov-out"><i class="fa-solid ${style.icon} book-icon"></i><div><div class="book-title">${subjectStr}</div><div class="book-major">${getMajor(subjectStr)}</div></div></div><div class="face cov-in"></div></div></div></div>`;
+});
+html += `</div><div class="wood-shelf"></div></div>`;
+}
+});
+
+container.innerHTML = html;
+}
+window.RC_POPULATE = function(d) { const m = getCombinedUnique(d.library.slice(1), 1, d.classes.slice(1), 0), w = getCombinedUnique(d.library.slice(1), 2, d.classes.slice(1), 1); populateStaticDropdown('lib-month', m); populateStaticDropdown('lib-week', w); };
+window.RC_RENDER = filterLibrary;
+(()=>{const MJ=['Auror','Ministry'],$=id=>document.getElementById(id),MSG={none:'Pick a month above to open a vault.',off:'No Final Summary has been published for this month yet.',wait:'This summary is still waiting for approval.'};
+function sync(){const sel=$('lib-month'),box=$('vault-months');if(!sel||!box)return;const m=sel.value,opts=[...sel.options].filter(o=>o.value!=='All');
+if(box.dataset.n!==String(opts.length)){box.innerHTML=opts.map(o=>'<button type="button" class="vm" data-m="'+o.value+'">'+o.text+'</button>').join('');box.dataset.n=opts.length}
+box.querySelectorAll('.vm').forEach(b=>b.classList.toggle('on',b.dataset.m===m));$('vault-hint').textContent='';
+MJ.forEach(mj=>{const v=document.querySelector('.vault[data-major="'+mj+'"]');let st='none',tx='Choose a month';
+try{if(m!=='All'){if(!db.finalSummaries){tx='Syncing archives'}else{const r=db.finalSummaries.slice(1).find(w=>w[0]&&w[1]&&w[0].trim().toLowerCase()===m.toLowerCase()&&w[1].trim().toLowerCase()===mj.toLowerCase());if(!r){st='off';tx='Not available yet'}else{const t=(r[3]||'').trim().toLowerCase();if(t==='approved'||t==='acc'){st='ready';tx='Ready to open'}else{st='wait';tx=r[3]||'Pending'}}}}}catch(e){}
+v.dataset.state=st;v.querySelector('.vault-state').textContent=tx})}
+window.vaultOpen=mj=>{const v=document.querySelector('.vault[data-major="'+mj+'"]');if(v.dataset.state==='ready'){openModal(mj);return}
+$('vault-hint').textContent=MSG[v.dataset.state]||'The archives are still syncing. Try again in a moment.';v.classList.remove('shake');void v.offsetWidth;v.classList.add('shake')};
+$('vault-months').addEventListener('click',e=>{const b=e.target.closest('.vm');if(!b)return;$('lib-month').value=b.dataset.m;filterLibrary();sync()});
+$('lib-month').addEventListener('change',sync);
+new MutationObserver(sync).observe($('lib-month'),{childList:true});
+new MutationObserver(sync).observe($('library-content'),{childList:true});sync();
+const vp=window.verifyPasscode;window.verifyPasscode=function(){const ok=expectedToken!==''&&$('passcode-input').value.trim()===expectedToken;if(ok){const c=document.querySelector('.modal-card'),i=c.querySelector('.modal-lock');c.classList.add('unlocking');i.className='fa-solid fa-lock-open modal-lock';setTimeout(()=>{c.classList.remove('unlocking');i.className='fa-solid fa-lock modal-lock'},1600)}vp()}})();
+</script>
+</body>
+</html>
