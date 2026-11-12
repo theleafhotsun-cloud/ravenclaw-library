@@ -46,17 +46,13 @@ body.home #stars{z-index:2}
 .hall-ui .hp-hero>*{animation:none}
 .hall-ui .halo{width:clamp(96px,17vmin,150px);margin-bottom:22px}
 .hall-ui .hp-mega{font-size:clamp(3rem,11vw,7.5rem)}
-.tomes{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(6px,1.6vw,16px);margin-top:34px}
-.tm{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;width:clamp(62px,17vw,98px);height:clamp(92px,25vw,132px);padding:8px 4px;text-align:center;text-decoration:none;color:#f6e3b4;font:600 clamp(.6rem,1.9vw,.76rem)/1.2 Manrope,sans-serif;border-radius:3px 10px 10px 3px;background:linear-gradient(100deg,rgba(0,0,0,.5) 0 6px,transparent 6px),linear-gradient(rgba(5,8,30,.22),rgba(5,8,30,.22)),var(--b);box-shadow:inset 0 0 0 1px rgba(233,201,135,.55),inset 0 8px 0 -6px #e9c987,inset 0 -8px 0 -6px #e9c987,0 16px 32px rgba(0,0,0,.65);animation:bob 4.5s ease-in-out infinite alternate;animation-delay:calc(var(--i)*-.9s);transition:box-shadow .3s,filter .3s}
-.tm i{font-size:clamp(1.1rem,4vw,1.6rem);color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.6)}
-.tm:hover,.tm:focus-visible{filter:brightness(1.2);box-shadow:inset 0 0 0 1px #e9c987,0 0 34px rgba(233,201,135,.55),0 16px 32px rgba(0,0,0,.65)}
 .snd{position:fixed;top:14px;right:14px;z-index:61;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:rgba(10,16,52,.66);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);color:#d9f6ff;font-size:1rem;cursor:pointer;opacity:0;pointer-events:none;transition:opacity 1s 2.4s}
 .in .snd{opacity:1;pointer-events:auto}
 .snd[aria-pressed=true]{color:#f6e3b4;box-shadow:0 0 22px rgba(233,201,135,.35)}
 .snd.attn{animation:pulse 1.6s ease-in-out infinite}
 @keyframes pulse{50%{box-shadow:0 0 0 9px rgba(159,232,255,.2)}}
 .gate{position:fixed;inset:0;z-index:120;perspective:1400px;display:grid;place-items:center;overflow:hidden}
-.door{position:absolute;top:0;bottom:0;width:50.3%;transition:transform 2.6s cubic-bezier(.6,0,.2,1);background:radial-gradient(ellipse at center,transparent 35%,rgba(0,0,0,.65)),linear-gradient(transparent 14%,#6b4a1e 14% 17%,#e9c987 17% 17.6%,#6b4a1e 17.6% 20%,transparent 20% 80%,#6b4a1e 80% 82.4%,#e9c987 82.4% 83%,#6b4a1e 83% 86%,transparent 86%),repeating-linear-gradient(90deg,#251808 0 44px,#150d04 44px 47px)}
+.door{position:absolute;top:0;bottom:0;width:50.3%;transition:transform 2.6s cubic-bezier(.6,0,.2,1);background:radial-gradient(ellipse at center,transparent 35%,rgba(2,4,20,.7)),linear-gradient(transparent 14%,#2c47b8 14% 17%,#e9c987 17% 17.6%,#2c47b8 17.6% 20%,transparent 20% 80%,#2c47b8 80% 82.4%,#e9c987 82.4% 83%,#2c47b8 83% 86%,transparent 86%),radial-gradient(circle 1.4px at 22px 30px,rgba(246,227,180,.85),transparent) 0 0/97px 83px,radial-gradient(circle 1px at 61px 71px,rgba(191,233,255,.8),transparent) 0 0/71px 91px,repeating-linear-gradient(90deg,#12206e 0 44px,#0a1448 44px 47px)}
 .dl{left:0;transform-origin:0 50%}
 .dr{right:0;transform-origin:100% 50%}
 .door::after{content:'';position:absolute;top:50%;width:46px;height:46px;margin-top:-23px;border:5px solid #e9c987;border-radius:50%;box-shadow:0 0 18px rgba(233,201,135,.5),inset 0 0 8px rgba(0,0,0,.6)}
@@ -70,6 +66,19 @@ body.home #stars{z-index:2}
 .g-t{font:italic 300 clamp(1.8rem,6vw,3rem)/1.1 Fraunces,serif;color:#fff;text-shadow:0 0 30px rgba(159,232,255,.5)}
 .g-n{font-size:.85rem;color:var(--text-light)}
 /* sihir tambahan */
+.hall-ui .hp-hero{padding-bottom:80px}
+.scrolls{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(14px,3vw,26px);margin-top:34px;max-width:46rem}
+.sc{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;width:clamp(88px,27vw,150px);padding:20px 9px 22px;text-align:center;text-decoration:none;color:#1b2766;border-radius:3px;transform:rotate(var(--r));background:radial-gradient(circle at 18% 12%,rgba(140,100,40,.2),transparent 42%),radial-gradient(circle at 88% 84%,rgba(140,100,40,.24),transparent 46%),linear-gradient(#f6ecd0,#e4d3a6);box-shadow:inset 0 0 20px rgba(130,90,30,.4),0 16px 30px rgba(0,0,0,.6);animation:scfloat 5.5s ease-in-out infinite alternate;animation-delay:calc(var(--i)*-1.3s);transition:box-shadow .3s}
+.sc:nth-child(even){margin-top:16px}
+.sc::before,.sc::after{content:'';position:absolute;left:-5px;right:-5px;height:13px;border-radius:7px;background:linear-gradient(#a98a4e,#f3e4b8 42%,#c9aa63 72%,#7d5f28);box-shadow:0 3px 6px rgba(0,0,0,.45)}
+.sc::before{top:-7px}.sc::after{bottom:-7px}
+.sl{display:grid;place-items:center;width:clamp(30px,9vw,38px);aspect-ratio:1;border-radius:50%;font-size:clamp(.8rem,3vw,1rem);color:#f6e3b4;background:radial-gradient(circle at 35% 30%,#5a78e0,#1e3799 60%,#0c2461);box-shadow:0 3px 8px rgba(0,0,0,.5),inset 0 0 0 2px rgba(246,227,180,.4)}
+.sc b{font:italic 600 clamp(.85rem,3.2vw,1.15rem)/1.15 Fraunces,Georgia,serif}
+.sc small{display:none;font:500 .72rem/1.35 Manrope,sans-serif;color:#4d3d1c}
+.sc:hover,.sc:focus-visible{animation-play-state:paused;box-shadow:inset 0 0 20px rgba(130,90,30,.3),0 0 40px rgba(159,232,255,.6),0 16px 30px rgba(0,0,0,.6)}
+@keyframes scfloat{from{transform:rotate(var(--r)) translateY(0)}to{transform:rotate(calc(var(--r)*-.55)) translateY(-14px)}}
+@media(min-width:700px){.sc small{display:block}}
+@media(min-width:1000px) and (min-height:760px){.scrolls{position:absolute;inset:0;max-width:none;margin:0;pointer-events:none}.sc{position:absolute;left:var(--x);top:var(--y);bottom:var(--b);width:150px;margin:0;pointer-events:auto}}
 .lumos{position:fixed;inset:0;z-index:3;pointer-events:none;opacity:0;mix-blend-mode:screen;background:radial-gradient(circle 260px at var(--mx,50%) var(--my,42%),rgba(255,214,140,.24),rgba(159,232,255,.09) 48%,transparent 72%);transition:opacity 2s 2.2s}
 .in .lumos{opacity:1}
 @media(hover:none){.lumos{display:none}}
@@ -81,10 +90,7 @@ body.home #stars{z-index:2}
 .gate.open::before{opacity:1}
 .hall-ui .hp-mega{background-image:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.95) 50%,transparent 58%),linear-gradient(#fff,#9fe8ff 70%,#6f8cff);background-size:250% 100%,100% 100%;background-repeat:no-repeat;background-position:150% 0,0 0;animation:sheen 7s 3.4s ease-in-out infinite}
 @keyframes sheen{0%,60%{background-position:150% 0,0 0}100%{background-position:-50% 0,0 0}}
-.tm{position:relative;overflow:hidden}
-.tm::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 35%,rgba(255,236,190,.45) 50%,transparent 65%) 160% 0/250% 100% no-repeat;transition:background-position .9s}
-.tm:hover::after,.tm:focus-visible::after{background-position:-60% 0}
-@media(prefers-reduced-motion:reduce){.motes,.lumos{display:none}.hall-ui .hp-mega{animation:none}.dolly,.door,.hall,.hall-ui,.gate.open{transition-duration:.01s;transition-delay:0s}.cd>div,.fm,.tm,.rays{animation:none}}
+@media(prefers-reduced-motion:reduce){.motes,.lumos{display:none}.hall-ui .hp-mega{animation:none}.dolly,.door,.hall,.hall-ui,.gate.open{transition-duration:.01s;transition-delay:0s}.cd>div,.fm,.sc,.rays{animation:none}}
 </style>
 </head>
 <body class="home">
@@ -97,14 +103,6 @@ body.home #stars{z-index:2}
 <audio id="bgm" loop preload="none"></audio>
 <header class="hp-nav">
 <a class="hp-brand" href="/" aria-label="House of Ravenclaw home"><img src="https://lh3.googleusercontent.com/d/1eQXRQppRAoOD6T9FLiRMVJSaHZSZ1E-a=w80" alt=""><span>HOUSE OF RAVENCLAW</span></a>
-<nav class="nav-menu" aria-label="Library sections">
-<a class="nav-item active" href="/" aria-current="page"><i class="fa-solid fa-house"></i> <span class="nav-txt">Home</span></a>
-<a class="nav-item" href="/library.html"><i class="fa-solid fa-book-open"></i> <span class="nav-txt">Library</span></a>
-<a class="nav-item" href="/classes.html"><i class="fa-solid fa-scroll"></i> <span class="nav-txt">Class Information</span></a>
-<a class="nav-item" href="/reports.html"><i class="fa-solid fa-shield-halved"></i> <span class="nav-txt">Academic Reports</span></a>
-<a class="nav-item" href="/directory.html"><i class="fa-solid fa-landmark"></i> <span class="nav-txt">Class Directory</span></a>
-<a class="nav-item" href="/owl-guide.html"><i class="fa-solid fa-file-signature"></i> <span class="nav-txt">O.W.L Guide</span></a>
-</nav>
 </header>
 <button type="button" class="snd" id="snd" aria-pressed="false" aria-label="Music" title="Music on / off"><i class="fa-solid fa-volume-xmark"></i></button>
 <main class="hall-ui" id="ui">
@@ -113,12 +111,12 @@ body.home #stars{z-index:2}
 <p class="hp-motto">Wit beyond measure is man’s greatest treasure</p>
 <h1 class="hp-h hp-mega">Ravenclaw</h1>
 <p class="hp-tag">The Academic Library. Class scrolls, schedules and reports, all in one tower.</p>
-<nav class="tomes" aria-label="Library sections">
-<a class="tm" href="/library.html" style="--i:0;--b:linear-gradient(135deg,#1e3799,#0c2461)"><i class="fa-solid fa-book-open"></i><span>Library</span></a>
-<a class="tm" href="/classes.html" style="--i:1;--b:linear-gradient(135deg,#5a3d8f,#0c2461)"><i class="fa-solid fa-scroll"></i><span>Class Information</span></a>
-<a class="tm" href="/reports.html" style="--i:2;--b:linear-gradient(135deg,#0e6f7d,#0a2a4a)"><i class="fa-solid fa-shield-halved"></i><span>Academic Reports</span></a>
-<a class="tm" href="/directory.html" style="--i:3;--b:linear-gradient(135deg,#b8863a,#5a3a12)"><i class="fa-solid fa-landmark"></i><span>Class Directory</span></a>
-<a class="tm" href="/owl-guide.html" style="--i:4;--b:linear-gradient(135deg,#4a6b8a,#16202e)"><i class="fa-solid fa-file-signature"></i><span>O.W.L Guide</span></a>
+<nav class="scrolls" aria-label="Library sections">
+<a class="sc" href="/library.html" style="--i:0;--r:-7deg;--x:6%;--y:12%"><span class="sl"><i class="fa-solid fa-book-open"></i></span><b>Library</b><small>Class scrolls, shelved by day</small></a>
+<a class="sc" href="/classes.html" style="--i:1;--r:5deg;--x:80%;--y:9%"><span class="sl"><i class="fa-solid fa-scroll"></i></span><b>Class Information</b><small>Schedules, tasks and replacement classes</small></a>
+<a class="sc" href="/reports.html" style="--i:2;--r:6deg;--x:5%;--b:8%"><span class="sl"><i class="fa-solid fa-shield-halved"></i></span><b>Academic Reports</b><small>Your monthly report scrolls</small></a>
+<a class="sc" href="/directory.html" style="--i:3;--r:-5deg;--x:81%;--b:12%"><span class="sl"><i class="fa-solid fa-landmark"></i></span><b>Class Directory</b><small>Professors, classrooms, deadlines</small></a>
+<a class="sc" href="/owl-guide.html" style="--i:4;--r:-2deg;--x:calc(50% - 75px);--b:3%"><span class="sl"><i class="fa-solid fa-file-signature"></i></span><b>O.W.L Guide</b><small>Exam rules and requirements</small></a>
 </nav>
 </section>
 </main>
