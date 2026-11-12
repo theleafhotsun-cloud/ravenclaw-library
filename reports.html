@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Academic Reports · Library of Ravenclaw</title>
+<meta name="theme-color" content="#04061a">
+<meta name="description" content="Your monthly academic scrolls.">
+<meta property="og:title" content="House of Ravenclaw - Library">
+<link rel="icon" href="https://lh3.googleusercontent.com/d/1eQXRQppRAoOD6T9FLiRMVJSaHZSZ1E-a=s64">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/library.css">
+</head>
+<body>
+<canvas id="stars" aria-hidden="true"></canvas><canvas id="sparks" aria-hidden="true"></canvas>
+
+<header class="hp-nav">
+<a class="hp-brand" href="/" aria-label="House of Ravenclaw home"><img src="https://lh3.googleusercontent.com/d/1eQXRQppRAoOD6T9FLiRMVJSaHZSZ1E-a=w80" alt=""><span>HOUSE OF RAVENCLAW</span></a>
+<nav class="nav-menu" aria-label="Library sections">
+<a class="nav-item" href="/"><i class="fa-solid fa-house"></i> <span class="nav-txt">Home</span></a>
+<a class="nav-item" href="/library.html"><i class="fa-solid fa-book-open"></i> <span class="nav-txt">Library</span></a>
+<a class="nav-item" href="/classes.html"><i class="fa-solid fa-scroll"></i> <span class="nav-txt">Class Information</span></a>
+<a class="nav-item active" href="/reports.html" aria-current="page"><i class="fa-solid fa-shield-halved"></i> <span class="nav-txt">Academic Reports</span></a>
+<a class="nav-item" href="/directory.html"><i class="fa-solid fa-landmark"></i> <span class="nav-txt">Class Directory</span></a>
+<a class="nav-item" href="/owl-guide.html"><i class="fa-solid fa-file-signature"></i> <span class="nav-txt">O.W.L Guide</span></a>
+</nav>
+</header>
+<main class="main-content">
+<div id="loader" class="loading-screen">
+<img src="https://lh3.googleusercontent.com/d/1itBW7VYne3TZcKNmiia7X2HxGn-LSD33=w128" alt="Ravenclaw crest">
+<p id="loader-msg">Consulting the Archives...</p>
+</div>
+
+<section id="report" class="section active">
+<div class="page-header">
+<h2>Academic Reports</h2>
+<p class="page-sub">Your monthly academic scrolls.</p>
+</div>
+<div class="filter-bar">
+<div class="filter-group"><span class="filter-label">Major</span><select id="rep-major" class="filter-select" onchange="filterReport()"></select></div>
+<div class="filter-group"><span class="filter-label">Month</span><select id="rep-month" class="filter-select" onchange="filterReport()"></select></div>
+<div class="filter-group"><span class="filter-label">Year</span><select id="rep-year" class="filter-select" onchange="filterReport()"></select></div>
+</div>
+<div id="report-content" class="report-grid"></div>
+</section>
+</main>
+<script src="/config.js"></script>
+<script src="/library.js"></script>
+<script>
+function filterReport() {
+if (!db.library) return;
+const fMaj = document.getElementById('rep-major').value;
+const fMon = document.getElementById('rep-month').value;
+const fYr = document.getElementById('rep-year').value;
+const container = document.getElementById('report-content');
+
+let filtered = db.report.slice(1).filter(row => {
+return (fMaj === "All" || (row[2] || "").trim() === fMaj) &&
+(fMon === "All" || (row[0] || "").trim() === fMon) &&
+(fYr === "All" || (row[1] || "").trim() === fYr);
+});
+
+if(filtered.length === 0) { container.innerHTML = '<p style="text-align:center; font-style:italic; width:100%;">No reports found.</p>'; return; }
+
+container.innerHTML = '';
+filtered.forEach(row => {
+let reportMonth = (row[0] || "").trim();
+let reportYear = (row[1] || "").trim();
+let reportMajor = (row[2] || "").trim();
+let linkBtn = extractAndRenderButton(row[3], "Open report", "fa-envelope-open-text", "padding: 10px;");
+
+container.innerHTML += `<div class="env" onclick="this.classList.toggle('open')"><div class="env-box"><div class="env-letter"><b>Academic Report</b><i></i><i></i><i></i></div><div class="env-front"></div><div class="env-flap"></div><div class="env-seal"><i class="fa-solid fa-feather-pointed"></i></div></div><div class="env-cap"><small>${reportMajor}</small><b>${reportMonth} ${reportYear}</b></div>${linkBtn}</div>`;
+});
+}
+window.RC_POPULATE = function(d) { populateDropdown(d.report.slice(1), 2, 'rep-major', 'All Majors'); populateDropdown(d.report.slice(1), 0, 'rep-month', 'All Months'); populateDropdown(d.report.slice(1), 1, 'rep-year', 'All Years'); };
+window.RC_RENDER = filterReport;
+</script>
+</body>
+</html>
