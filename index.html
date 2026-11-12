@@ -63,6 +63,9 @@ body.home #stars{z-index:2}
 .g-t{font:italic 300 clamp(1.8rem,6vw,3rem)/1.1 Fraunces,serif;color:#fff;text-shadow:0 0 30px rgba(159,232,255,.5)}
 .g-n{font-size:.85rem;color:var(--text-light)}
 /* sihir tambahan */
+.in .sc{opacity:1;translate:none;scale:1}
+.fast .sc{--sd:.15s}
+.hall-ui .hp-hero>nav.scrolls{opacity:1;transform:none;transition:none}
 .hall-ui .hp-hero>*{opacity:0;transform:translateY(22px);transition:opacity 1.5s ease,transform 1.5s cubic-bezier(.2,.7,.2,1);transition-delay:calc(1.9s + var(--k,0)*.2s)}
 .in .hall-ui .hp-hero>*{opacity:1;transform:none}
 .fast .hall-ui .hp-hero>*{transition-duration:.7s;transition-delay:calc(var(--k,0)*.08s)}
@@ -89,7 +92,7 @@ body.home #stars{z-index:2}
 .snd{border-color:rgba(233,201,135,.4)}.snd:hover{box-shadow:0 0 22px rgba(159,232,255,.45)}
 .hall-ui .hp-hero{padding:56px 20px 80px}
 .scrolls{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(14px,3vw,26px);margin-top:34px;max-width:46rem}
-.sc{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;width:clamp(88px,27vw,150px);padding:20px 9px 22px;text-align:center;text-decoration:none;color:#1b2766;border-radius:3px;transform:rotate(var(--r));background:radial-gradient(circle at 18% 12%,rgba(140,100,40,.2),transparent 42%),radial-gradient(circle at 88% 84%,rgba(140,100,40,.24),transparent 46%),linear-gradient(#f6ecd0,#e4d3a6);box-shadow:inset 0 0 20px rgba(130,90,30,.4),0 16px 30px rgba(0,0,0,.6);animation:scfloat 5.5s ease-in-out infinite alternate;animation-delay:calc(var(--i)*-1.3s);transition:box-shadow .3s}
+.sc{position:relative;display:flex;flex-direction:column;align-items:center;gap:5px;width:clamp(88px,27vw,150px);padding:20px 9px 22px;text-align:center;text-decoration:none;color:#1b2766;border-radius:3px;transform:rotate(var(--r));background:radial-gradient(circle at 18% 12%,rgba(140,100,40,.2),transparent 42%),radial-gradient(circle at 88% 84%,rgba(140,100,40,.24),transparent 46%),linear-gradient(#f6ecd0,#e4d3a6);box-shadow:inset 0 0 20px rgba(130,90,30,.4),0 16px 30px rgba(0,0,0,.6);animation:scfloat 5.5s ease-in-out infinite alternate;animation-delay:calc(var(--i)*-1.3s);opacity:0;translate:0 46px;scale:.82;transition:box-shadow .3s,opacity 1s calc(var(--sd,2.7s) + var(--i)*.15s) ease,translate 1.2s calc(var(--sd,2.7s) + var(--i)*.15s) cubic-bezier(.2,.9,.25,1.12),scale 1.2s calc(var(--sd,2.7s) + var(--i)*.15s) cubic-bezier(.2,.9,.25,1.12)}
 .sc:nth-child(even){margin-top:16px}
 .sc::before,.sc::after{content:'';position:absolute;left:-5px;right:-5px;height:13px;border-radius:7px;background:linear-gradient(#a98a4e,#f3e4b8 42%,#c9aa63 72%,#7d5f28);box-shadow:0 3px 6px rgba(0,0,0,.45)}
 .sc::before{top:-7px}.sc::after{bottom:-7px}
@@ -111,17 +114,16 @@ body.home #stars{z-index:2}
 .gate.open::before{opacity:1}
 .hall-ui .hp-mega{background-image:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.95) 50%,transparent 58%),linear-gradient(#fff,#9fe8ff 70%,#6f8cff);background-size:250% 100%,100% 100%;background-repeat:no-repeat;background-position:150% 0,0 0;animation:sheen 7s 3.4s ease-in-out infinite}
 @keyframes sheen{0%,60%{background-position:150% 0,0 0}100%{background-position:-50% 0,0 0}}
-@media(prefers-reduced-motion:reduce){.motes,.lumos{display:none}.emb::before,.emb i{animation:none}.hall-ui .hp-hero>*{transition-duration:.01s;transition-delay:0s}.hall-ui .hp-mega{animation:none}.dolly,.door,.hall,.hall-ui,.gate.open{transition-duration:.01s;transition-delay:0s}.cd>div,.fm,.sc,.rays{animation:none}}
+@media(prefers-reduced-motion:reduce){.motes,.lumos{display:none}.sc{transition:none}.emb::before,.emb i{animation:none}.hall-ui .hp-hero>*{transition-duration:.01s;transition-delay:0s}.hall-ui .hp-mega{animation:none}.dolly,.door,.hall,.hall-ui,.gate.open{transition-duration:.01s;transition-delay:0s}.cd>div,.fm,.sc,.rays{animation:none}}
 </style>
 </head>
 <body class="home">
-<noscript><style>.gate{display:none}.hall-ui,.snd{opacity:1;pointer-events:auto}.hall-ui .hp-hero>*{opacity:1;transform:none}</style></noscript>
+<noscript><style>.gate{display:none}.hall-ui,.snd{opacity:1;pointer-events:auto}.hall-ui .hp-hero>*{opacity:1;transform:none}.sc{opacity:1;translate:none;scale:1}</style></noscript>
 <canvas id="stars" aria-hidden="true"></canvas><canvas id="sparks" aria-hidden="true"></canvas>
 <div class="scene" aria-hidden="true"><div class="dolly"><div class="hall" id="hall">
 <i class="p wl"></i><i class="p wr"></i><i class="p fo"></i><i class="p ce"></i><i class="p bk"><b class="win"></b></i>
 </div></div><div class="rays"></div><div class="vig"></div></div>
 <div class="lumos" id="lum" aria-hidden="true"></div>
-<audio id="bgm" loop preload="none"></audio>
 <button type="button" class="snd" id="snd" aria-pressed="false" aria-label="Music" title="Music on / off"><i class="fa-solid fa-volume-xmark"></i></button>
 <main class="hall-ui" id="ui">
 <section class="hp-hero">
@@ -149,13 +151,12 @@ body.home #stars{z-index:2}
 </div>
 <script src="/config.js"></script>
 <script src="/library.js"></script>
+<script src="/rc-music.js"></script>
 <script>
 (function () {
 'use strict';
-// Ubah nama file musik di sini kalau file-nya diganti namanya.
-const MUSIC = '/Harry%20Potter%20Ambient%20Music%20_%20Hogwarts%20_%20Relaxing%20Studying%20Sleeping_128k%20(1).m4a';
 const $ = function (id) { return document.getElementById(id); };
-const a = $('bgm'), snd = $('snd'), hall = $('hall'), gate = $('gate'), lum = $('lum'), body = document.body;
+const hall = $('hall'), gate = $('gate'), lum = $('lum'), body = document.body;
 const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let seed = 7;
 const R = function () { return (seed = seed * 16807 % 2147483647) / 2147483647; };
@@ -189,32 +190,15 @@ const mo = document.createElement('div'); mo.className = 'motes'; mo.setAttribut
 for (let i = 0, M = innerWidth < 700 ? 14 : 26; i < M; i++) { const m = document.createElement('i'); m.className = 'mt'; m.style.cssText = '--x:' + (R() * 100).toFixed(1) + '%;--s:' + (2 + R() * 3).toFixed(1) + 'px;--d:' + (9 + R() * 10).toFixed(1) + 's;--w:-' + (R() * 14).toFixed(1) + 's;--dx:' + ((R() - .5) * 160).toFixed(0) + 'px'; mo.appendChild(m); }
 document.body.appendChild(mo);
 const lock = function (v) { document.querySelectorAll('.hall-ui').forEach(function (e) { e.inert = v; }); };
-const pref = function () { try { return localStorage.getItem('rc:music') !== 'off'; } catch (e) { return true; } };
-const save = function (v) { try { localStorage.setItem('rc:music', v ? 'on' : 'off'); } catch (e) {} };
-let on = false, timer = 0;
-function paint(v) { on = v; snd.setAttribute('aria-pressed', v); snd.firstElementChild.className = 'fa-solid ' + (v ? 'fa-volume-high' : 'fa-volume-xmark'); snd.classList.remove('attn'); }
-function fade(to, ms) {
-clearInterval(timer); const from = a.volume, t0 = performance.now();
-timer = setInterval(function () { const k = Math.min(1, (performance.now() - t0) / ms); a.volume = from + (to - from) * k; if (k === 1) { clearInterval(timer); if (!to) a.pause(); } }, 50);
-}
-function play() {
-a.volume = 0;
-return a.play().then(function () { paint(true); fade(.45, 3500); }, function () { paint(false); snd.classList.add('attn'); });
-}
-snd.addEventListener('click', function () {
-if (on) { save(false); paint(false); fade(0, 600); } else { save(true); play(); }
-});
-document.addEventListener('visibilitychange', function () { if (!on) return; if (document.hidden) a.pause(); else a.play().catch(function () {}); });
-a.src = MUSIC;
 function enter(instant) {
 body.classList.add('in'); lock(false);
 if (instant) { gate.remove(); } else { gate.classList.add('open'); setTimeout(function () { gate.remove(); }, still ? 50 : 3300); }
 try { sessionStorage.setItem('rc:in', '1'); } catch (e) {}
-if (pref()) play(); else paint(false);
+if (window.RCMusic) RCMusic.enter();
 }
 lock(true);
 let seen = false; try { seen = sessionStorage.getItem('rc:in') === '1'; } catch (e) {}
-if (seen) { a.volume = 0; document.querySelector('.dolly').style.transition = 'none'; body.classList.add('fast'); enter(true); }
+if (seen) { document.querySelector('.dolly').style.transition = 'none'; body.classList.add('fast'); enter(true); }
 else { $('open').addEventListener('click', function () { enter(false); }); $('open').focus(); }
 if (!still) addEventListener('pointermove', function (e) {
 if (e.pointerType === 'touch') return;
