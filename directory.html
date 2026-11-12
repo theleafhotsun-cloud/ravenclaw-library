@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class Directory · Library of Ravenclaw</title>
+<meta name="theme-color" content="#04061a">
+<meta name="description" content="Professors, classrooms, rules and deadlines.">
+<meta property="og:title" content="House of Ravenclaw - Library">
+<link rel="icon" href="https://lh3.googleusercontent.com/d/1eQXRQppRAoOD6T9FLiRMVJSaHZSZ1E-a=s64">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/library.css">
+</head>
+<body>
+<canvas id="stars" aria-hidden="true"></canvas><canvas id="sparks" aria-hidden="true"></canvas>
+
+<header class="hp-nav">
+<a class="hp-brand" href="/" aria-label="House of Ravenclaw home"><img src="https://lh3.googleusercontent.com/d/1eQXRQppRAoOD6T9FLiRMVJSaHZSZ1E-a=w80" alt=""><span>HOUSE OF RAVENCLAW</span></a>
+<nav class="nav-menu" aria-label="Library sections">
+<a class="nav-item" href="/"><i class="fa-solid fa-house"></i> <span class="nav-txt">Home</span></a>
+<a class="nav-item" href="/library.html"><i class="fa-solid fa-book-open"></i> <span class="nav-txt">Library</span></a>
+<a class="nav-item" href="/classes.html"><i class="fa-solid fa-scroll"></i> <span class="nav-txt">Class Information</span></a>
+<a class="nav-item" href="/reports.html"><i class="fa-solid fa-shield-halved"></i> <span class="nav-txt">Academic Reports</span></a>
+<a class="nav-item active" href="/directory.html" aria-current="page"><i class="fa-solid fa-landmark"></i> <span class="nav-txt">Class Directory</span></a>
+<a class="nav-item" href="/owl-guide.html"><i class="fa-solid fa-file-signature"></i> <span class="nav-txt">O.W.L Guide</span></a>
+</nav>
+</header>
+<main class="main-content">
+<div id="loader" class="loading-screen">
+<img src="https://lh3.googleusercontent.com/d/1itBW7VYne3TZcKNmiia7X2HxGn-LSD33=w128" alt="Ravenclaw crest">
+<p id="loader-msg">Consulting the Archives...</p>
+</div>
+
+<section id="classguide" class="section active">
+<div class="page-header">
+<h2>Class Directory</h2>
+<p class="page-sub">Professors, classrooms, rules and deadlines.</p>
+</div>
+<div class="filter-bar">
+<div class="filter-group"><span class="filter-label">Level</span><select id="gui-level" class="filter-select" onchange="filterClassGuide()"></select></div>
+<div class="filter-group"><span class="filter-label">Subject</span><select id="gui-sub" class="filter-select" onchange="filterClassGuide()"></select></div>
+</div>
+<div id="classguide-content" class="portraits"></div>
+</section>
+</main>
+<script src="/config.js"></script>
+<script src="/library.js"></script>
+<script>
+function filterClassGuide() {
+if (!db.library) return;
+const fLvl = document.getElementById('gui-level').value;
+const fSub = document.getElementById('gui-sub').value;
+const container = document.getElementById('classguide-content');
+
+let filtered = db.classGuide.slice(1).filter(row => row[0] && row[1]).filter(row => {
+return (fLvl === "All" || row[0].trim() === fLvl) &&
+(fSub === "All" || row[1].trim() === fSub);
+});
+if(filtered.length === 0) { container.innerHTML = '<p class="pt-empty">No guide found.</p>'; return; }
+
+container.innerHTML = '';
+filtered.forEach(row => {
+let classRoomBtn = extractAndRenderButton(row[3], "Enter Class", "fa-door-open", "padding: 6px 12px; width: auto; font-size: 0.75rem;");
+let rulesBtn = extractAndRenderButton(row[4], "View Rules", "fa-scroll", "padding: 6px 12px; width: auto; font-size: 0.75rem; background: rgba(224, 181, 143, 0.1); border: 1px solid var(--text-gold); color: var(--text-gold) !important; box-shadow: none; text-shadow: none;");
+
+let profRaw = (row[2] || "").trim();
+let profData = extractLinkAndName(profRaw);
+let profHtml = "";
+
+if (profData.url) {
+profHtml = `<a href="${profData.url}" target="_blank" style="color: var(--text-gold); text-decoration: none; font-weight: 600; border-bottom: 1px dashed var(--text-gold); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; transition: 0.3s;" onclick="event.stopPropagation();"><i class="fa-solid fa-user-tie"></i> ${profData.name}</a>`;
+} else {
+profHtml = `<span style="font-weight: 600; color: var(--text-gold-light); white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-user-tie" style="color:var(--text-gold);"></i> ${profData.name || profRaw}</span>`;
+}
+
+const hdr = db.classGuide[0] || [];
+let extra = '';
+row.forEach(function(v, i) {
+if (i < 7 || !v || !String(v).trim()) return;
+const x = extractLinkAndName(v);
+const val = x.url ? '<a href="' + esc(x.url) + '" target="_blank" rel="noopener" style="color:var(--text-gold)">' + esc(x.name) + '</a>' : esc(x.name);
+extra += '<div style="grid-column:1/-1"><small>' + esc(hdr[i] || 'Info') + '</small><b>' + val + '</b></div>';
+});
+const cs=getBookCoverStyle(row[1]||"");
+container.innerHTML += `<article class="pt" style="--bg:${cs.bg}"><div class="pt-frame"><div class="pt-art"><i class="fa-solid ${cs.icon}"></i><span class="pt-lvl">${row[0]||""}</span></div></div><div class="pt-info"><h3>${row[1]||""}</h3><div class="pt-prof">${profHtml}</div><div class="pt-meta"><div><small>Late tolerance</small><b>${row[5]||"-"}</b></div><div><small>Final deadline</small><b>${row[6]||"-"}</b></div>${extra}</div><div class="pt-act">${classRoomBtn}${rulesBtn}</div></div></article>`;
+});
+}
+window.RC_POPULATE = function(d) { populateDropdown(d.classGuide.slice(1), 0, 'gui-level', 'All Levels'); populateDropdown(d.classGuide.slice(1), 1, 'gui-sub', 'All Subjects'); };
+window.RC_RENDER = filterClassGuide;
+</script>
+</body>
+</html>
